@@ -8,6 +8,8 @@
   onload="this.media='all'"
 >
 
+<link rel="stylesheet" href="{{ 'header-improvements.css' | asset_url }}" media="print" onload="this.media='all'">
+
 {%- if settings.predictive_search_enabled -%}
   <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
@@ -101,6 +103,7 @@
 {%- endstyle -%}
 
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'header-improvements.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
   for block in section.blocks
@@ -124,6 +127,7 @@
   {% endif %}
   class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
 >
+  <a class="skip-link" href="#MainContent">Skip to content</a>
   {%- liquid
     assign social_links = false
     assign localization_forms = false
@@ -247,7 +251,19 @@
           </localization-form>
         {%- endif -%}
       </div>
+      
+      {%- comment -%} Desktop Search Bar (visible on large screens) {%- endcomment -%}
+      <div class="header-search medium-hide">
+        {% render 'header-search', input_id: 'Search-In-Header' %}
+      </div>
+      
+      {%- comment -%} Mobile Modal Search (visible on mobile) {%- endcomment -%}
       {% render 'header-search', input_id: 'Search-In-Modal' %}
+
+      {%- comment -%} CTA Button (visible on desktop) {%- endcomment -%}
+      {%- if section.settings.enable_cta_button -%}
+        <a href="{{ section.settings.cta_button_link }}" class="header__cta-button link focus-inset">{{ section.settings.cta_button_label }}</a>
+      {%- endif -%}
 
       {%- if shop.customer_accounts_enabled -%}
         <a
@@ -285,7 +301,7 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
+      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble" aria-label="{{ 'templates.cart.cart' | t }}" aria-haspopup="false" role="button">
         {% if cart == empty %}
           <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
         {% else %}
@@ -293,7 +309,7 @@
         {% endif %}
         <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
         {%- if cart != empty -%}
-          <div class="cart-count-bubble">
+          <div class="cart-count-bubble" aria-live="polite" aria-atomic="true">
             {%- if cart.item_count < 100 -%}
               <span aria-hidden="true">{{ cart.item_count }}</span>
             {%- endif -%}
@@ -609,6 +625,27 @@
       "default": true,
       "label": "t:sections.header.settings.enable_customer_avatar.label",
       "info": "t:sections.header.settings.enable_customer_avatar.info"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_cta_button",
+      "default": false,
+      "label": "Enable CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "default": "Shop Now",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_link",
+      "label": "Button Link"
     },
     {
       "type": "header",

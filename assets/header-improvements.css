@@ -1,0 +1,270 @@
+/* ========== ACCESSIBILITY & CONTRAST ========== */
+.skip-link{
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus{
+  left: 1rem;
+  top: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  background: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  z-index: 9999;
+  border-radius: var(--buttons-radius);
+  font-weight: 600;
+}
+
+:focus-visible{
+  outline: 3px solid rgb(var(--color-button));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more){
+  :focus-visible{
+    outline-width: 4px;
+  }
+  
+  .header__icon:hover{
+    background-color: rgba(var(--color-foreground), 0.15);
+  }
+  
+  .header__cta-button{
+    border-width: 3px;
+  }
+}
+
+/* ========== HEADER LAYOUT - 3 COLUMN GRID ========== */
+.header{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+/* Mobile: stack vertically */
+@media screen and (max-width: 749px){
+  .header{
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+}
+
+/* Desktop: 3-column layout */
+@media screen and (min-width: 750px){
+  .header{
+    gap: 2rem;
+    padding: 1.2rem 0;
+  }
+}
+
+/* ========== LOGO/HEADING ========== */
+.header__heading-link{
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.header__heading-logo-wrapper{
+  max-width: 180px;
+  transition: max-width 0.3s ease;
+}
+
+@media screen and (min-width: 990px){
+  .header__heading-logo-wrapper{
+    max-width: 240px;
+  }
+}
+
+.scrolled-past-header .header__heading-logo-wrapper{
+  max-width: 140px;
+}
+
+/* ========== SEARCH - HIDE ON MOBILE, SHOW ON DESKTOP ========== */
+.header-search{
+  display: none;
+}
+
+@media screen and (min-width: 750px){
+  .header-search{
+    display: block;
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ========== MOBILE MENU DRAWER IMPROVEMENTS ========== */
+header-drawer{
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (max-width: 749px){
+  header-drawer button,
+  header-drawer [aria-controls]{
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  header-drawer button:hover,
+  header-drawer [aria-controls]:hover{
+    background-color: rgba(var(--color-button), 0.1);
+  }
+}
+
+@media screen and (min-width: 750px){
+  header-drawer{
+    display: none;
+  }
+}
+
+/* ========== ICONS CONTAINER ========== */
+.header__icons{
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-self: end;
+}
+
+@media screen and (max-width: 749px){
+  .header__icons{
+    gap: 0.75rem;
+  }
+}
+
+/* ========== ICON BUTTON STATES ========== */
+.header__icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  position: relative;
+  color: rgb(var(--color-foreground));
+}
+
+.header__icon:hover{
+  background-color: rgba(var(--color-foreground), 0.08);
+}
+
+.header__icon:active{
+  transform: scale(0.95);
+}
+
+@media (prefers-contrast: more){
+  .header__icon:hover{
+    background-color: rgba(var(--color-foreground), 0.15);
+  }
+}
+
+/* Cart icon with visual bubble */
+.header__icon--cart{
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.header__icon--cart:hover{
+  transform: scale(1.08);
+}
+
+.cart-count-bubble{
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  animation: bubble-pop 0.3s ease-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes bubble-pop{
+  0%{
+    transform: scale(1.3);
+    opacity: 0.8;
+  }
+  100%{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ========== STICKY HEADER CONDENSED ========== */
+.shopify-section-header-sticky .header{
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.shopify-section-header-sticky .header__heading-logo-wrapper{
+  max-width: 120px;
+}
+
+/* ========== CTA BUTTON ========== */
+.header__cta-button{
+  display: none;
+  padding: 0.75rem 1.5rem;
+  background: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  text-decoration: none;
+  border-radius: var(--buttons-radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid rgb(var(--color-button));
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-left: 1rem;
+  box-shadow: 0 2px 8px rgba(var(--color-button), 0.15);
+}
+
+.header__cta-button:hover{
+  background-color: rgba(var(--color-button), 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--color-button), 0.25);
+}
+
+.header__cta-button:active{
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(var(--color-button), 0.2);
+}
+
+@media screen and (min-width: 750px){
+  .header__cta-button{
+    display: inline-block;
+  }
+}
+
+@media (prefers-contrast: more){
+  .header__cta-button{
+    border-width: 3px;
+  }
+}
+
+/* ========== MOTION PREFERENCES ========== */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation: none !important;
+    transition: none !important;
+  }
+}
