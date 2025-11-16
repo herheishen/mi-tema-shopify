@@ -1,5 +1,141 @@
 {{ 'section-image-banner.css' | asset_url | stylesheet_tag }}
 
+<style>
+  /* ========== ULTRA PRO IMAGE BANNER IMPROVEMENTS ========== */
+  
+  /* Parallax effect */
+  #Banner-{{ section.id }}.banner--parallax .banner__media {
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  /* Blur effect options */
+  #Banner-{{ section.id }}.banner--blur-light .banner__media {
+    filter: blur(0.5px);
+  }
+
+  #Banner-{{ section.id }}.banner--blur-medium .banner__media {
+    filter: blur(2px);
+  }
+
+  #Banner-{{ section.id }}.banner--blur-heavy .banner__media {
+    filter: blur(4px);
+  }
+
+  /* Enhanced overlay gradient */
+  #Banner-{{ section.id }}.banner--gradient-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,{{ section.settings.image_overlay_opacity | divided_by: 100.0 }}) 0%, rgba(0,0,0,0) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Image zoom animation on load */
+  #Banner-{{ section.id }} .banner__media img {
+    animation: image-load-zoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes image-load-zoom {
+    from {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Smooth content fade-in */
+  #Banner-{{ section.id }} .banner__content {
+    animation: content-slide-fade 0.9s ease-out 0.1s both;
+  }
+
+  @keyframes content-slide-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced button hover states */
+  #Banner-{{ section.id }} .banner__buttons .button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #Banner-{{ section.id }} .banner__buttons .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.4s ease;
+  }
+
+  #Banner-{{ section.id }} .banner__buttons .button:hover::before {
+    left: 100%;
+  }
+
+  #Banner-{{ section.id }} .banner__buttons .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Text shadow for better contrast */
+  #Banner-{{ section.id }} .banner__heading {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+  }
+
+  #Banner-{{ section.id }} .banner__text {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Media query optimizations */
+  @media (prefers-reduced-motion: reduce) {
+    #Banner-{{ section.id }} .banner__media img,
+    #Banner-{{ section.id }} .banner__content,
+    #Banner-{{ section.id }} .banner__buttons .button {
+      animation: none;
+    }
+  }
+
+  /* High DPI screens optimization */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #Banner-{{ section.id }} .banner__media img {
+      image-rendering: -webkit-optimize-contrast;
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    #Banner-{{ section.id }} .banner__buttons .button {
+      padding: 16px 28px;
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    #Banner-{{ section.id }} .banner__heading {
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+  }
+</style>
+
 {%- if section.settings.image_height == 'adapt' and section.settings.image != blank -%}
   {%- style -%}
     @media screen and (max-width: 749px) {
@@ -53,7 +189,9 @@
 
 <div
   id="Banner-{{ section.id }}"
-  class="banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  class="banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %} banner--parallax banner--gradient-overlay{% if section.settings.blur_effect != blank %} banner--blur-{{ section.settings.blur_effect }}{% endif %}"
+  role="img"
+  aria-label="{% if section.settings.image.alt %}{{ section.settings.image.alt }}{% else %}{{ section.settings.image_2.alt | default: 'Banner' }}{% endif %}"
 >
   {%- if section.settings.image != blank -%}
     <div class="banner__media media{% if section.settings.image == blank and section.settings.image_2 == blank %} placeholder{% endif %}{% if section.settings.image_2 != blank %} banner__media-half{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
@@ -79,7 +217,9 @@
           class: image_class,
           sizes: sizes,
           widths: widths,
-          fetchpriority: fetch_priority
+          fetchpriority: fetch_priority,
+          loading: 'lazy',
+          decoding: 'async'
       }}
     </div>
   {%- elsif section.settings.image_2 == blank -%}
@@ -111,7 +251,9 @@
           class: image_class_2,
           sizes: sizes,
           widths: widths,
-          fetchpriority: fetch_priority
+          fetchpriority: fetch_priority,
+          loading: 'lazy',
+          decoding: 'async'
       }}
     </div>
   {%- endif -%}
@@ -165,6 +307,124 @@
     </div>
   </div>
 </div>
+
+<script>
+  // ========== ULTRA PRO PARALLAX & INTERACTIONS ==========
+  (function() {
+    const banner = document.getElementById('Banner-{{ section.id }}');
+    if (!banner) return;
+
+    const mediaElement = banner.querySelector('.banner__media');
+    if (!mediaElement) return;
+
+    // Parallax effect on scroll
+    let ticking = false;
+    const parallaxEffect = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = window.scrollY || window.pageYOffset;
+          const elementTop = banner.getBoundingClientRect().top;
+          const elementHeight = banner.offsetHeight;
+          const windowHeight = window.innerHeight;
+
+          if (elementTop < windowHeight && elementTop + elementHeight > 0) {
+            const offset = (scrollTop - (banner.offsetTop - windowHeight)) * 0.5;
+            mediaElement.style.transform = `translateY(${offset}px)`;
+          }
+        });
+        ticking = true;
+        setTimeout(() => { ticking = false; }, 16);
+      }
+    };
+
+    // Touch gesture detection
+    let touchStartY = 0;
+    mediaElement.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    mediaElement.addEventListener('touchmove', (e) => {
+      const touchCurrentY = e.touches[0].clientY;
+      const diff = touchStartY - touchCurrentY;
+      
+      if (Math.abs(diff) > 10) {
+        mediaElement.style.filter = `blur(${Math.min(diff / 20, 2)}px)`;
+      }
+    }, { passive: true });
+
+    mediaElement.addEventListener('touchend', () => {
+      mediaElement.style.filter = 'blur(0px)';
+    });
+
+    // Intersection observer for animation trigger
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          window.addEventListener('scroll', parallaxEffect, { passive: true });
+        }
+      });
+    }, observerOptions);
+
+    observer.observe(banner);
+
+    // Viewport-based animation
+    if ('IntersectionObserver' in window) {
+      const contentElement = banner.querySelector('.banner__content');
+      if (contentElement) {
+        const contentObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, { threshold: 0.1 });
+
+        contentObserver.observe(contentElement);
+      }
+    }
+
+    // Button ripple effect
+    const buttons = banner.querySelectorAll('.banner__buttons .button');
+    buttons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.width = '20px';
+        ripple.style.height = '20px';
+        ripple.style.background = 'radial-gradient(circle, rgba(255,255,255,0.5), transparent)';
+        ripple.style.borderRadius = '50%';
+        ripple.style.pointerEvents = 'none';
+        ripple.style.animation = 'ripple 0.6s ease-out';
+        ripple.style.left = (e.clientX - button.getBoundingClientRect().left) + 'px';
+        ripple.style.top = (e.clientY - button.getBoundingClientRect().top) + 'px';
+        button.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('scroll', parallaxEffect);
+      observer.disconnect();
+    };
+  })();
+</script>
+
+<style>
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+</style>
 
 {% schema %}
 {
@@ -242,6 +502,30 @@
       ],
       "default": "none",
       "label": "t:sections.all.animation.image_behavior.label"
+    },
+    {
+      "type": "select",
+      "id": "blur_effect",
+      "options": [
+        {
+          "value": "",
+          "label": "None"
+        },
+        {
+          "value": "light",
+          "label": "Light Blur"
+        },
+        {
+          "value": "medium",
+          "label": "Medium Blur"
+        },
+        {
+          "value": "heavy",
+          "label": "Heavy Blur"
+        }
+      ],
+      "default": "",
+      "label": "Image Blur Effect"
     },
     {
       "type": "header",
