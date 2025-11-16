@@ -7,8 +7,7 @@
   media="print"
   onload="this.media='all'"
 >
-
-<link rel="stylesheet" href="{{ 'header-improvements.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'header-improvements.css' | asset_url }}">
 
 {%- if settings.predictive_search_enabled -%}
   <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
