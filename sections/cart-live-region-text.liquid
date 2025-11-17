@@ -1,1 +1,443 @@
-{{ 'sections.cart.new_estimated_total' | t }}: {{ cart.total_price | money_with_currency }}
+<style>
+  /* ========== CART LIVE REGION TEXT ULTRA PRO 2025 ========== */
+
+  /* Base animations */
+  @keyframes slide-in-price {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes price-highlight {
+    0%, 100% {
+      background-color: transparent;
+    }
+    50% {
+      background-color: rgba(255, 193, 7, 0.2);
+    }
+  }
+
+  @keyframes number-roll {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes subtle-glow {
+    0%, 100% {
+      text-shadow: 0 0 0px rgba(255, 193, 7, 0);
+    }
+    50% {
+      text-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+    }
+  }
+
+  /* Live region container */
+  .cart-live-region-text {
+    position: relative;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(76, 175, 80, 0.05) 100%);
+    border-left: 4px solid #ffc107;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.8);
+    animation: slide-in-price 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.3s ease;
+    margin: 8px 0;
+  }
+
+  /* Update indicator */
+  .cart-live-region-text::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #ffc107 0%, #4caf50 100%);
+    border-radius: 6px 0 0 6px;
+    animation: subtle-glow 2s ease-in-out infinite;
+  }
+
+  /* Label styling */
+  .cart-live-region-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 6px;
+    animation: slide-in-price 0.5s ease-out 0.1s both;
+  }
+
+  /* Price amount styling */
+  .cart-live-region-price {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #2e7d32;
+    animation: number-roll 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    transition: all 0.3s ease;
+  }
+
+  /* Price update highlight */
+  .cart-live-region-price.updated {
+    animation: price-highlight 0.8s ease-out;
+  }
+
+  /* Currency symbol */
+  .cart-live-region-currency {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* Status badges */
+  .cart-live-region-status {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(76, 175, 80, 0.15);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2e7d32;
+    margin-left: 8px;
+    animation: slide-in-price 0.5s ease-out 0.3s both;
+  }
+
+  /* Discount indicator */
+  .cart-live-region-discount {
+    display: block;
+    margin-top: 8px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    color: #c62828;
+    font-weight: 600;
+    animation: slide-in-price 0.5s ease-out 0.4s both;
+  }
+
+  .cart-live-region-discount::before {
+    content: '✓ ';
+    margin-right: 4px;
+    font-weight: 700;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .cart-live-region-text {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+    }
+
+    .cart-live-region-price {
+      font-size: 1.2rem;
+    }
+
+    .cart-live-region-label {
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .cart-live-region-text {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.08) 0%, rgba(76, 175, 80, 0.08) 100%);
+      color: rgba(255, 255, 255, 0.9);
+      border-left-color: #ffd54f;
+    }
+
+    .cart-live-region-label {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .cart-live-region-price {
+      color: #81c784;
+    }
+
+    .cart-live-region-status {
+      background: rgba(76, 175, 80, 0.25);
+      color: #a5d6a7;
+    }
+
+    .cart-live-region-discount {
+      border-top-color: rgba(255, 255, 255, 0.1);
+      color: #ef5350;
+    }
+  }
+
+  /* Motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .cart-live-region-text,
+    .cart-live-region-label,
+    .cart-live-region-price,
+    .cart-live-region-status,
+    .cart-live-region-discount {
+      animation: none;
+    }
+
+    .cart-live-region-text,
+    .cart-live-region-price {
+      transition: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: more) {
+    .cart-live-region-text {
+      border-left-width: 6px;
+      font-weight: 600;
+    }
+
+    .cart-live-region-price {
+      font-weight: 900;
+    }
+
+    .cart-live-region-label {
+      font-weight: 700;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .cart-live-region-text::before {
+      display: none;
+    }
+  }
+</style>
+
+<div 
+  class="cart-live-region-text" 
+  role="status" 
+  aria-live="polite" 
+  aria-atomic="true"
+  data-live-region="cart-total"
+>
+  <span class="cart-live-region-label">{{ 'sections.cart.new_estimated_total' | t }}:</span>
+  <span class="cart-live-region-price" data-price="{{ cart.total_price }}">
+    <span class="cart-live-region-currency" aria-hidden="true">
+      {%- if cart.currency.symbol -%}
+        {{ cart.currency.symbol }}
+      {%- else -%}
+        {{ cart.currency.iso_code }}
+      {%- endif -%}
+    </span>{{ cart.total_price | money_with_currency | remove: cart.currency.iso_code | strip }}
+  </span>
+  <span class="cart-live-region-status" data-items-count="{{ cart.item_count }}" aria-label="Cart contains {{ cart.item_count }} items">
+    ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})
+  </span>
+  {%- if cart.total_discount > 0 -%}
+    <div class="cart-live-region-discount" role="complementary" aria-label="You saved {{ cart.total_discount | money_with_currency }}">
+      {{ 'customer.order.discount' | t }}: {{ cart.total_discount | money_with_currency }}
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  // ========== CART LIVE REGION TEXT ULTRA PRO 2025 ==========
+  class CartLiveRegionUltraPro {
+    constructor(container) {
+      this.container = container;
+      this.priceElement = container.querySelector('.cart-live-region-price');
+      this.statusElement = container.querySelector('.cart-live-region-status');
+      this.discountElement = container.querySelector('.cart-live-region-discount');
+      this.lastPrice = this.getCurrentPrice();
+      this.lastCount = this.getCurrentCount();
+
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.setupAccessibility();
+      this.logMetrics('CartLiveRegion initialized');
+    }
+
+    setupEventListeners() {
+      // Monitor cart updates
+      document.addEventListener('cart:updated', (e) => this.handleCartUpdate(e));
+      document.addEventListener('cart:updated-mobile', (e) => this.handleCartUpdate(e));
+
+      // Mutation observer for price changes
+      this.observePriceChanges();
+    }
+
+    setupAccessibility() {
+      // Ensure proper ARIA attributes
+      this.container.setAttribute('role', 'status');
+      this.container.setAttribute('aria-live', 'polite');
+      this.container.setAttribute('aria-atomic', 'true');
+
+      // Add aria-labels
+      if (this.priceElement) {
+        this.priceElement.setAttribute('aria-label', `Total price: ${this.getFormattedPrice()}`);
+      }
+
+      if (this.statusElement) {
+        const itemCount = this.getCurrentCount();
+        this.statusElement.setAttribute('aria-label', `Cart contains ${itemCount} item${itemCount !== 1 ? 's' : ''}`);
+      }
+    }
+
+    observePriceChanges() {
+      if ('MutationObserver' in window && this.priceElement) {
+        const observer = new MutationObserver((mutations) => {
+          const currentPrice = this.getCurrentPrice();
+          if (currentPrice !== this.lastPrice) {
+            this.onPriceChange(this.lastPrice, currentPrice);
+            this.lastPrice = currentPrice;
+          }
+
+          const currentCount = this.getCurrentCount();
+          if (currentCount !== this.lastCount) {
+            this.onCountChange(this.lastCount, currentCount);
+            this.lastCount = currentCount;
+          }
+        });
+
+        observer.observe(this.priceElement, {
+          characterData: true,
+          childList: true,
+          subtree: true,
+        });
+      }
+    }
+
+    getCurrentPrice() {
+      if (!this.priceElement) return 0;
+      const priceText = this.priceElement.getAttribute('data-price');
+      return parseInt(priceText) || 0;
+    }
+
+    getCurrentCount() {
+      if (!this.statusElement) return 0;
+      const countText = this.statusElement.getAttribute('data-items-count');
+      return parseInt(countText) || 0;
+    }
+
+    getFormattedPrice() {
+      if (!this.priceElement) return '';
+      return this.priceElement.textContent.trim();
+    }
+
+    handleCartUpdate(e) {
+      const newPrice = e.detail?.price || this.getCurrentPrice();
+      const newCount = e.detail?.count || this.getCurrentCount();
+
+      if (newPrice !== this.lastPrice) {
+        this.onPriceChange(this.lastPrice, newPrice);
+      }
+
+      if (newCount !== this.lastCount) {
+        this.onCountChange(this.lastCount, newCount);
+      }
+
+      this.lastPrice = newPrice;
+      this.lastCount = newCount;
+    }
+
+    onPriceChange(oldPrice, newPrice) {
+      if (newPrice > oldPrice) {
+        this.animatePriceIncrease();
+        this.trackEvent('price_increase', newPrice - oldPrice);
+      } else if (newPrice < oldPrice) {
+        this.animatePriceDecrease();
+        this.trackEvent('price_decrease', oldPrice - newPrice);
+      }
+
+      // Update aria-label
+      if (this.priceElement) {
+        this.priceElement.setAttribute('aria-label', `Total price: ${this.getFormattedPrice()}`);
+      }
+    }
+
+    onCountChange(oldCount, newCount) {
+      if (newCount !== oldCount && this.statusElement) {
+        this.statusElement.setAttribute('data-items-count', newCount);
+        this.statusElement.setAttribute('aria-label', `Cart contains ${newCount} item${newCount !== 1 ? 's' : ''}`);
+
+        if (newCount > oldCount) {
+          this.animateCountIncrease();
+        }
+      }
+    }
+
+    animatePriceIncrease() {
+      if (!this.priceElement) return;
+
+      this.priceElement.classList.remove('updated');
+      void this.priceElement.offsetWidth; // Trigger reflow
+
+      this.priceElement.classList.add('updated');
+
+      setTimeout(() => {
+        this.priceElement.classList.remove('updated');
+      }, 800);
+    }
+
+    animatePriceDecrease() {
+      if (!this.priceElement) return;
+
+      this.priceElement.style.color = '#d32f2f';
+      setTimeout(() => {
+        this.priceElement.style.color = '#2e7d32';
+      }, 600);
+    }
+
+    animateCountIncrease() {
+      if (!this.statusElement) return;
+
+      this.statusElement.style.animation = 'none';
+      void this.statusElement.offsetWidth;
+
+      this.statusElement.style.animation = 'slide-in-price 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+      setTimeout(() => {
+        this.statusElement.style.animation = '';
+      }, 400);
+    }
+
+    trackEvent(eventName, amount) {
+      if (window.gtag) {
+        gtag('event', 'cart_total_change', {
+          event_type: eventName,
+          amount: amount,
+          total_price: this.getCurrentPrice(),
+        });
+      }
+    }
+
+    logMetrics(message) {
+      if (window.performance && window.performance.mark) {
+        performance.mark(message);
+      }
+    }
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', function () {
+    const liveRegions = document.querySelectorAll('[data-live-region="cart-total"]');
+    liveRegions.forEach((region) => {
+      new CartLiveRegionUltraPro(region);
+    });
+  });
+
+  // Reinitialize on section load
+  document.addEventListener('theme:section:load', function (e) {
+    const liveRegion = e.detail.target?.querySelector('[data-live-region="cart-total"]');
+    if (liveRegion) {
+      new CartLiveRegionUltraPro(liveRegion);
+    }
+  });
+</script>
