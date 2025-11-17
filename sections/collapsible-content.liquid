@@ -71,6 +71,16 @@
             <h2 class="visually-hidden">{{ 'accessibility.collapsible_content_title' | t }}</h2>
           {% endif %}
         </div>
+
+        <!-- Extra controls: Expand All / Collapse All + live region for screen readers -->
+        <div class="collapsible-controls" style="margin-bottom:12px; display:flex; gap:8px; align-items:center;">
+          <div style="margin-left:auto; display:flex; gap:8px;">
+            <button type="button" class="btn-collapsible-expand" aria-label="Expand all">Expand all</button>
+            <button type="button" class="btn-collapsible-collapse" aria-label="Collapse all">Collapse all</button>
+          </div>
+          <div class="collapsible-live" aria-live="polite" aria-atomic="true" style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;">0</div>
+        </div>
+
         <div class="grid grid--1-col grid--2-col-tablet collapsible-content__grid{% if section.settings.desktop_layout == 'image_second' %} collapsible-content__grid--reverse{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
           {%- if section.settings.image != blank -%}
             <div class="grid__item collapsible-content__grid-item">
@@ -266,6 +276,84 @@
       sections.forEach((sec) => {
         if (sec.closest('.collapsible-content')) {
           enhanceSection(sec);
+
+          // Extras: expand/collapse all controls + deep-linking + live region updates
+          const expandBtn = sec.querySelector('.btn-collapsible-expand');
+          const collapseBtn = sec.querySelector('.btn-collapsible-collapse');
+          const liveRegion = sec.querySelector('.collapsible-live');
+
+          function updateLiveCount() {
+            const openCount = sec.querySelectorAll('details[open]').length;
+            if (liveRegion) liveRegion.textContent = `${openCount} item${openCount !== 1 ? 's' : ''} open`;
+          }
+
+          if (expandBtn) {
+            expandBtn.addEventListener('click', () => {
+              sec.querySelectorAll('details[data-collapsible]').forEach((d) => {
+                if (!d.hasAttribute('open')) {
+                  const summary = d.querySelector('summary');
+                  d.setAttribute('open','');
+                  summary.setAttribute('aria-expanded','true');
+                  const content = d.querySelector('.accordion__content');
+                  if (content) {
+                    content.style.display = 'block';
+                    if (!prefersReduceMotion) content.style.height = content.scrollHeight + 'px';
+                  }
+                  if (window.gtag) gtag('event','collapsible_expand_all');
+                }
+              });
+              updateLiveCount();
+            });
+          }
+
+          if (collapseBtn) {
+            collapseBtn.addEventListener('click', () => {
+              sec.querySelectorAll('details[data-collapsible]').forEach((d) => {
+                if (d.hasAttribute('open')) {
+                  const summary = d.querySelector('summary');
+                  d.removeAttribute('open');
+                  summary.setAttribute('aria-expanded','false');
+                  const content = d.querySelector('.accordion__content');
+                  if (content) {
+                    content.style.height = '0px';
+                    // hide after animation
+                    setTimeout(() => { content.style.display = 'none'; content.style.height = ''; }, 300);
+                  }
+                }
+              });
+              if (window.gtag) gtag('event','collapsible_collapse_all');
+              updateLiveCount();
+            });
+          }
+
+          // Deep-linking: open details matching location.hash
+          if (location.hash) {
+            const target = sec.querySelector(location.hash.replace('#','') ? `[id="${location.hash.replace('#','')}"]` : null);
+            if (target && target.tagName === 'DETAILS') {
+              const summary = target.querySelector('summary');
+              if (!target.hasAttribute('open')) {
+                target.setAttribute('open','');
+                if (summary) summary.setAttribute('aria-expanded','true');
+                const content = target.querySelector('.accordion__content');
+                if (content) content.style.display = 'block';
+              }
+              summary?.scrollIntoView({ behavior: prefersReduceMotion ? 'auto' : 'smooth', block: 'center' });
+              updateLiveCount();
+            }
+          }
+
+          // Update live count on any toggle
+          sec.querySelectorAll('details[data-collapsible]').forEach((d) => {
+            d.addEventListener('toggle', () => updateLiveCount());
+            const summary = d.querySelector('summary');
+            summary?.addEventListener('click', () => {
+              if (window.gtag) gtag('event','collapsible_toggle', { id: d.id, open: d.hasAttribute('open') });
+              setTimeout(updateLiveCount, 50);
+            });
+          });
+
+          // Initial live count
+          updateLiveCount();
         }
       });
     });
