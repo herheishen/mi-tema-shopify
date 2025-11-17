@@ -1,1 +1,543 @@
-{{ 'general.cart.view' | t: count: cart.item_count }}
+<style>
+  /* ========== CART NOTIFICATION BUTTON ULTRA PRO 2025 ========== */
+
+  /* Base animations */
+  @keyframes button-pulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 6px 20px rgba(var(--color-link-rgb, 0, 0), 0.3);
+    }
+    50% {
+      transform: scale(1.02);
+      box-shadow: 0 8px 28px rgba(var(--color-link-rgb, 0, 0), 0.4);
+    }
+  }
+
+  @keyframes slide-in-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer-loading {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  @keyframes ripple-expand {
+    from {
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    to {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes text-slide {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes glow-shadow {
+    0%, 100% {
+      box-shadow: 0 6px 20px rgba(var(--color-link-rgb, 0, 0), 0.3);
+    }
+    50% {
+      box-shadow: 0 10px 32px rgba(var(--color-link-rgb, 0, 0), 0.5);
+    }
+  }
+
+  /* Button container */
+  .cart-notification-button-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Main button styling */
+  .cart-notification-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: var(--color-link);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 6px 20px rgba(var(--color-link-rgb, 0, 0), 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: slide-in-bottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 48px;
+  }
+
+  /* Ripple effect on click */
+  .cart-notification-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .cart-notification-button:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Hover state */
+  .cart-notification-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(var(--color-link-rgb, 0, 0), 0.4);
+    animation: glow-shadow 1.5s ease-in-out infinite;
+  }
+
+  /* Active state */
+  .cart-notification-button:active:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  /* Disabled state */
+  .cart-notification-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Button text */
+  .cart-notification-button-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: text-slide 0.6s ease-out 0.1s both;
+  }
+
+  /* Item count badge */
+  .cart-notification-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: text-slide 0.6s ease-out 0.15s both;
+  }
+
+  /* Loading state */
+  .cart-notification-button.loading {
+    pointer-events: none;
+  }
+
+  .cart-notification-button.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      transparent 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer-loading 1.5s infinite;
+    border-radius: 8px;
+  }
+
+  /* Success state animation */
+  .cart-notification-button.success {
+    animation: button-pulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Icon styling */
+  .cart-notification-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+  }
+
+  .cart-notification-button:hover .cart-notification-icon {
+    transform: scale(1.1);
+  }
+
+  /* Accessibility focus state */
+  .cart-notification-button:focus {
+    outline: 2px solid var(--color-link);
+    outline-offset: 3px;
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .cart-notification-button {
+      background: var(--color-link);
+      box-shadow: 0 6px 24px rgba(var(--color-link-rgb, 100, 150, 255), 0.4);
+    }
+
+    .cart-notification-button:hover:not(:disabled) {
+      box-shadow: 0 10px 40px rgba(var(--color-link-rgb, 100, 150, 255), 0.5);
+    }
+
+    .cart-notification-count {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .cart-notification-button {
+      padding: 16px 28px;
+      font-size: 1rem;
+      min-height: 50px;
+    }
+
+    .cart-notification-button:hover {
+      transform: none;
+      animation: none;
+    }
+
+    .cart-notification-count {
+      min-width: 28px;
+      height: 28px;
+      font-size: 0.85rem;
+    }
+  }
+
+  /* Tablet optimization */
+  @media (max-width: 1024px) {
+    .cart-notification-button {
+      padding: 12px 20px;
+      font-size: 0.9rem;
+    }
+
+    .cart-notification-count {
+      min-width: 22px;
+      height: 22px;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .cart-notification-button,
+    .cart-notification-button-text,
+    .cart-notification-count {
+      animation: none;
+    }
+
+    .cart-notification-button,
+    .cart-notification-icon {
+      transition: none;
+    }
+
+    .cart-notification-button:hover {
+      animation: none;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: more) {
+    .cart-notification-button {
+      border: 2px solid currentColor;
+      font-weight: 700;
+    }
+
+    .cart-notification-count {
+      font-weight: 900;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .cart-notification-button::before,
+    .cart-notification-button::after {
+      display: none;
+    }
+  }
+</style>
+
+<div class="cart-notification-button-container" data-cart-notification>
+  <button
+    type="button"
+    class="cart-notification-button"
+    data-cart-count="{{ cart.item_count }}"
+    aria-label="View cart with {{ cart.item_count }} item{{ cart.item_count | pluralize: '', 's' }}"
+  >
+    <span class="cart-notification-button-text">
+      <span class="cart-notification-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </span>
+      {{ 'general.cart.view' | t: count: cart.item_count }}
+    </span>
+    {%- if cart.item_count > 0 -%}
+      <span class="cart-notification-count" data-count="{{ cart.item_count }}" role="status" aria-live="polite">
+        {%- if cart.item_count < 100 -%}
+          {{ cart.item_count }}
+        {%- else -%}
+          99+
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+  </button>
+</div>
+
+<script>
+  // ========== CART NOTIFICATION BUTTON ULTRA PRO 2025 ==========
+  class CartNotificationButtonUltraPro {
+    constructor(container) {
+      this.container = container;
+      this.button = container.querySelector('.cart-notification-button');
+      this.countBadge = container.querySelector('.cart-notification-count');
+      this.lastCount = this.getCurrentCount();
+
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.setupAccessibility();
+      this.logMetrics('CartNotificationButton initialized');
+    }
+
+    setupEventListeners() {
+      // Button click
+      this.button?.addEventListener('click', (e) => this.handleButtonClick(e));
+
+      // Cart updates
+      document.addEventListener('cart:updated', (e) => this.handleCartUpdate(e));
+      document.addEventListener('cart:updated-mobile', (e) => this.handleCartUpdate(e));
+
+      // Keyboard shortcuts
+      this.button?.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+      // Monitor count changes
+      this.observeCountChanges();
+    }
+
+    setupAccessibility() {
+      if (this.button) {
+        // Update aria-label
+        const count = this.getCurrentCount();
+        this.button.setAttribute(
+          'aria-label',
+          `View cart with ${count} item${count !== 1 ? 's' : ''}`
+        );
+
+        // Set role and aria for status
+        if (this.countBadge) {
+          this.countBadge.setAttribute('role', 'status');
+          this.countBadge.setAttribute('aria-live', 'polite');
+        }
+      }
+    }
+
+    observeCountChanges() {
+      if ('MutationObserver' in window && this.countBadge) {
+        const observer = new MutationObserver(() => {
+          const currentCount = this.getCurrentCount();
+          if (currentCount !== this.lastCount) {
+            this.onCountChange(this.lastCount, currentCount);
+            this.lastCount = currentCount;
+          }
+        });
+
+        observer.observe(this.countBadge, {
+          characterData: true,
+          childList: true,
+          subtree: true,
+        });
+      }
+    }
+
+    getCurrentCount() {
+      if (!this.countBadge) return 0;
+      const text = this.countBadge.textContent.trim();
+      return parseInt(text.replace('+', '')) || 0;
+    }
+
+    handleButtonClick(e) {
+      // Create ripple effect
+      this.createRipple(e);
+
+      // Add pulse animation
+      this.button.classList.add('success');
+      setTimeout(() => {
+        this.button.classList.remove('success');
+      }, 600);
+
+      // Track event
+      this.trackEvent('cart_button_click');
+    }
+
+    handleCartUpdate(e) {
+      const newCount = e.detail?.count || this.getCurrentCount();
+
+      if (newCount > this.lastCount) {
+        this.onCountIncrease(this.lastCount, newCount);
+      } else if (newCount < this.lastCount) {
+        this.onCountDecrease(this.lastCount, newCount);
+      }
+
+      this.lastCount = newCount;
+
+      // Update aria-label
+      this.button?.setAttribute(
+        'aria-label',
+        `View cart with ${newCount} item${newCount !== 1 ? 's' : ''}`
+      );
+    }
+
+    onCountChange(oldCount, newCount) {
+      if (newCount !== oldCount) {
+        this.animateCountUpdate();
+      }
+    }
+
+    onCountIncrease(oldCount, newCount) {
+      if (this.button) {
+        this.button.classList.add('success');
+        setTimeout(() => {
+          this.button.classList.remove('success');
+        }, 600);
+      }
+
+      // Show loading state briefly
+      this.showLoadingState();
+
+      this.trackEvent('cart_item_added', { old_count: oldCount, new_count: newCount });
+    }
+
+    onCountDecrease(oldCount, newCount) {
+      this.trackEvent('cart_item_removed', { old_count: oldCount, new_count: newCount });
+    }
+
+    animateCountUpdate() {
+      if (!this.countBadge) return;
+
+      this.countBadge.style.animation = 'none';
+      void this.countBadge.offsetWidth; // Trigger reflow
+
+      this.countBadge.style.animation = 'text-slide 0.4s ease-out';
+
+      setTimeout(() => {
+        this.countBadge.style.animation = '';
+      }, 400);
+    }
+
+    showLoadingState() {
+      if (!this.button) return;
+
+      this.button.classList.add('loading');
+
+      setTimeout(() => {
+        this.button.classList.remove('loading');
+      }, 1000);
+    }
+
+    createRipple(e) {
+      const ripple = document.createElement('span');
+      const rect = this.button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        left: ${x}px;
+        top: ${y}px;
+        pointer-events: none;
+      `;
+
+      this.button.style.position = 'relative';
+      this.button.appendChild(ripple);
+
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    handleKeyboard(e) {
+      // Enter or Space to click
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.button.click();
+      }
+    }
+
+    trackEvent(eventName, data = {}) {
+      if (window.gtag) {
+        gtag('event', eventName, {
+          cart_count: this.getCurrentCount(),
+          ...data,
+        });
+      }
+    }
+
+    logMetrics(message) {
+      if (window.performance && window.performance.mark) {
+        performance.mark(message);
+      }
+    }
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', function () {
+    const containers = document.querySelectorAll('[data-cart-notification]');
+    containers.forEach((container) => {
+      new CartNotificationButtonUltraPro(container);
+    });
+  });
+
+  // Reinitialize on section load
+  document.addEventListener('theme:section:load', function (e) {
+    const container = e.detail.target?.querySelector('[data-cart-notification]');
+    if (container) {
+      new CartNotificationButtonUltraPro(container);
+    }
+  });
+</script>
