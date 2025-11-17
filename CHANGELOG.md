@@ -4,6 +4,28 @@
 
 This changelog lists the Ultra Pro 2025 enhancements applied to the theme.
 
+### 6db2123 — feat: Mejoras ultra pro 2025 en `contact-form.liquid`
+- Formulario contacto mejorado con glassmorphism inputs, 3 animaciones CSS (form-slide-in, success-glow, shake), validación client-side en tiempo real.
+- Clase JS `ContactFormUltraPro`: validación de fields (email/name requeridos, email regex), visualización de errores con animación shake, accesibilidad completa.
+- Estados: loading button (spinner), aria-labels en inputs, aria-invalid para errores, aria-describedby linked a error messages, role="status"/"alert" en status messages.
+- Success/error messages con estilos inline (fondo, borde, color contextuales), animación success-glow (2s), dark mode y reduced-motion support.
+- Analytics: gtag events `contact_form_submit` y `contact_form_error` con field_count tracking.
+
+### c0d076a — feat: Mejoras ultra pro 2025 en `collection-list.liquid`
+- Grid de colecciones destacadas con glassmorphism cards (backdrop-filter blur 6px, rgba 0.8, border soft).
+- Reveal animations mediante IntersectionObserver con staggered delays (data-index), hover micro-interactions (translateY -6px, enhanced shadow).
+- Slider tracking con analytics en prev/next/items visibles, data-section-id para scoping, role="listitem" con aria-label.
+- Dark mode y reduced-motion support, focus rings (2px outline), transiciones smooth.
+
+### 9c0c1ba — feat: Extras ultra pro en `collapsible-content.liquid`
+- Expand All/Collapse All buttons con animación coordenada, deep-linking via URL hash (#Details-{id}), detecta hash al cargar y expande automáticamente.
+- Live region (aria-live="polite") para anuncios de screen readers, eventos analytics (gtag): `collapsible_expand_all`, `collapsible_collapse_all`, `collapsible_toggle`.
+- MutationObserver fallback para navegadores sin `requestAnimationFrame` smooth scrolling.
+
+### adfd7be — feat: Mejoras ultra pro 2025 en `collapsible-content.liquid`
+- Acordeón/FAQ con open/close animations smooth (height animado via requestAnimationFrame), keyboard nav (ArrowUp/Down/Home/End), aria-expanded/aria-controls.
+- Reduced-motion y dark mode support, transiciones smooth, fallback para navegadores antiguos.
+
 ### e8e4064 — feat: Mejoras ultra pro 2025 en `collage.liquid`
 - Glassmorphism card styles, responsive grid y hover micro-interactions.
 - Reveal animations mediante `IntersectionObserver` con soporte `prefers-reduced-motion`.
