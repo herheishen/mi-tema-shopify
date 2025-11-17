@@ -12,10 +12,71 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Ultra Pro Contact Form */
+  @keyframes form-slide-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes success-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+  .contact { animation: form-slide-in 0.6s cubic-bezier(.2,.8,.2,1); }
+
+  .field__input, .text-area {
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8));
+    border: 1px solid rgba(var(--color-link-rgb,0,0),0.12);
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .field__input:focus, .text-area:focus {
+    outline: none;
+    border-color: var(--color-link);
+    box-shadow: 0 0 0 3px rgba(var(--color-link-rgb,0,0),0.1), 0 6px 20px rgba(var(--color-link-rgb,0,0),0.15);
+    background: rgba(255,255,255,1);
+  }
+
+  .field__input[aria-invalid="true"] {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.05);
+  }
+
+  .contact__field-error { display: block; margin-top: 6px; animation: shake 0.4s ease; }
+
+  .form-status { padding: 16px; border-radius: 10px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; animation: form-slide-in 0.5s ease; }
+  .form-status-list { list-style: none; padding: 0; margin: 0; }
+
+  .button { border-radius: 10px; padding: 14px 28px; font-weight: 600; transition: all 0.3s cubic-bezier(.2,.8,.2,1); box-shadow: 0 6px 20px rgba(var(--color-link-rgb,0,0),0.2); }
+  .button:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(var(--color-link-rgb,0,0),0.3); }
+  .button:active { transform: translateY(0); }
+  .button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .form__message { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .field__input, .text-area {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.16);
+      color: #fff;
+    }
+    .field__input:focus, .text-area:focus {
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.5);
+      box-shadow: 0 0 0 3px rgba(var(--color-link-rgb,100,150,255),0.15), 0 6px 20px rgba(0,0,0,0.6);
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .contact, .field__input, .text-area, .button, .form-status, .contact__field-error {
+      animation: none;
+      transition: none;
+    }
+  }
+
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
+  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding" data-contact-form data-section-id="{{ section.id }}">
     {%- if section.settings.heading != blank -%}
       <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
         {{ section.settings.heading }}
@@ -29,21 +90,21 @@
         assign contact_form_class = 'isolate scroll-trigger animate--slide-in'
       endif
     -%}
-    {%- form 'contact', id: 'ContactForm', class: contact_form_class -%}
+    {%- form 'contact', id: 'ContactForm', class: contact_form_class, novalidate: 'novalidate' -%}
       {%- if form.posted_successfully? -%}
-        <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+        <div class="form-status form-status-list form__message" role="status" tabindex="-1" autofocus style="background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #16a34a; animation: success-glow 2s ease-out;">
           {{- 'icon-success.svg' | inline_asset_content -}}
           {{ 'templates.contact.form.post_success' | t }}
-        </h2>
+        </div>
       {%- elsif form.errors -%}
-        <div class="form__message">
+        <div class="form__message" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #b91c1c; padding: 12px; border-radius: 10px; margin-bottom: 12px;">
           <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
             {{- 'icon-error.svg' | inline_asset_content -}}
             {{ 'templates.contact.form.error_heading' | t }}
           </h2>
         </div>
-        <ul class="form-status-list caption-large" role="list">
-          <li>
+        <ul class="form-status-list caption-large" role="list" style="padding-left: 0; margin-top: 8px;">
+          <li style="margin-bottom: 6px;">
             <a href="#ContactForm-email" class="link">
               {{ form.errors.translated_fields.email | capitalize }}
               {{ form.errors.messages.email }}
@@ -61,6 +122,7 @@
             name="contact[{{ 'templates.contact.form.name' | t }}]"
             value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
             placeholder="{{ 'templates.contact.form.name' | t }}"
+            aria-label="{{ 'templates.contact.form.name' | t }}"
           >
           <label class="field__label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
         </div>
@@ -127,13 +189,138 @@
         </label>
       </div>
       <div class="contact__button">
-        <button type="submit" class="button">
-          {{ 'templates.contact.form.send' | t }}
+        <button type="submit" class="button" id="ContactForm-submit" data-button-submit>
+          <span data-button-text>{{ 'templates.contact.form.send' | t }}</span>
+          <span data-button-loader style="display: none;" aria-hidden="true">…</span>
         </button>
       </div>
     {%- endform -%}
   </div>
 </div>
+
+<script>
+  // Contact Form Ultra Pro: validation, animations, accessibility, analytics
+  (function () {
+    class ContactFormUltraPro {
+      constructor(root) {
+        this.root = root;
+        this.form = root.querySelector('form');
+        this.submitBtn = root.querySelector('[data-button-submit]');
+        this.inputs = root.querySelectorAll('.field__input');
+        this.init();
+      }
+
+      init() {
+        this.setupValidation();
+        this.setupSubmit();
+        this.setupAccessibility();
+      }
+
+      setupValidation() {
+        this.inputs.forEach((input) => {
+          input.addEventListener('blur', () => this.validateField(input));
+          input.addEventListener('input', () => {
+            if (input.getAttribute('aria-invalid') === 'true') {
+              this.validateField(input);
+            }
+          });
+        });
+      }
+
+      validateField(input) {
+        const id = input.id;
+        const value = input.value.trim();
+        let isValid = true;
+        let error = '';
+
+        if (id === 'ContactForm-email') {
+          if (!value) {
+            isValid = false;
+            error = 'Email is required';
+          } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            isValid = false;
+            error = 'Please enter a valid email';
+          }
+        } else if (id === 'ContactForm-name') {
+          if (!value) {
+            isValid = false;
+            error = 'Name is required';
+          }
+        }
+
+        if (!isValid) {
+          input.setAttribute('aria-invalid', 'true');
+          this.showFieldError(input, error);
+        } else {
+          input.setAttribute('aria-invalid', 'false');
+          this.clearFieldError(input);
+        }
+      }
+
+      showFieldError(input, message) {
+        const existingError = input.nextElementSibling?.querySelector('.contact__field-error');
+        if (existingError) existingError.remove();
+
+        const errorEl = document.createElement('small');
+        errorEl.className = 'contact__field-error';
+        errorEl.id = input.id + '-error';
+        errorEl.innerHTML = `<span class="visually-hidden">Error:</span> ${message}`;
+        errorEl.style.color = '#b91c1c';
+        input.parentNode.appendChild(errorEl);
+        input.setAttribute('aria-describedby', errorEl.id);
+      }
+
+      clearFieldError(input) {
+        const errorEl = input.nextElementSibling?.querySelector('.contact__field-error') || input.parentNode.querySelector('.contact__field-error');
+        if (errorEl) errorEl.remove();
+        input.removeAttribute('aria-describedby');
+      }
+
+      setupSubmit() {
+        this.form?.addEventListener('submit', (e) => {
+          this.inputs.forEach((input) => this.validateField(input));
+          const hasErrors = Array.from(this.inputs).some((i) => i.getAttribute('aria-invalid') === 'true');
+          if (hasErrors) {
+            e.preventDefault();
+            this.inputs[0].focus();
+            if (window.gtag) gtag('event', 'contact_form_error', { field_count: this.inputs.length });
+          } else {
+            this.setLoadingState(true);
+            if (window.gtag) gtag('event', 'contact_form_submit');
+          }
+        });
+      }
+
+      setupAccessibility() {
+        this.inputs.forEach((input) => {
+          if (!input.getAttribute('aria-label')) {
+            input.setAttribute('aria-label', input.placeholder || 'Form field');
+          }
+        });
+      }
+
+      setLoadingState(loading) {
+        if (!this.submitBtn) return;
+        const text = this.submitBtn.querySelector('[data-button-text]');
+        const loader = this.submitBtn.querySelector('[data-button-loader]');
+        if (loading) {
+          this.submitBtn.disabled = true;
+          text.style.display = 'none';
+          loader.style.display = 'inline';
+        } else {
+          this.submitBtn.disabled = false;
+          text.style.display = 'inline';
+          loader.style.display = 'none';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const forms = document.querySelectorAll('[data-contact-form]');
+      forms.forEach((form) => new ContactFormUltraPro(form));
+    });
+  })();
+</script>
 
 {% schema %}
 {
