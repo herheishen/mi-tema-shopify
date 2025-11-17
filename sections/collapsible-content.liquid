@@ -13,12 +13,47 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Ultra Pro accordion visuals */
+  .collapsible-content__header { margin-bottom: 12px; }
+
+  .accordion { margin-bottom: 12px; border-radius: 12px; overflow: visible; }
+
+  details { background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.72)); border-radius: 12px; border: 1px solid rgba(var(--color-link-rgb,0,0),0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.04); transition: box-shadow .28s ease, transform .28s cubic-bezier(.2,.8,.2,1); }
+
+  details[open] { box-shadow: 0 14px 36px rgba(0,0,0,0.08); transform: translateY(-4px); }
+
+  summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; }
+
+  summary:focus { outline: 3px solid rgba(var(--color-link-rgb,0,0),0.14); outline-offset: 6px; }
+
+  .accordion__title { margin: 0; font-weight: 700; }
+
+  .accordion__icon { margin-left: auto; transition: transform .36s cubic-bezier(.2,.8,.2,1); }
+  details[open] .accordion__icon { transform: rotate(180deg); }
+
+  .accordion__content { padding: 0 16px 18px 16px; overflow: hidden; }
+
+  /* Smooth open/close animation placeholder: JS will manage height */
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .accordion__icon { transition: none; }
+    details, summary, .accordion__content { transition: none !important; }
+  }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    details { background: rgba(255,255,255,0.03); border-color: rgba(var(--color-link-rgb,100,150,255),0.12); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+    .accordion__title { color: #fff; }
+  }
+
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="collapsible-content collapsible-{{ section.settings.layout }}-layout isolate{% if section.settings.layout == 'section' %} page-width{% elsif section.settings.layout == 'none' %} content-container content-container--full-width{% endif %}">
+  <div class="collapsible-content collapsible-{{ section.settings.layout }}-layout isolate{% if section.settings.layout == 'section' %} page-width{% elsif section.settings.layout == 'none' %} content-container content-container--full-width{% endif %}" data-section-id="{{ section.id }}">
     <div class="collapsible-content__wrapper section-{{ section.id }}-padding{% if section.settings.layout == 'section' %} content-container color-{{ section.settings.container_color_scheme }} gradient{% endif %}">
-      <div class="{% if section.settings.image == blank %}collapsible-content-wrapper-narrow{% else %}page-width{% endif %}">
+      <div class="{%- if section.settings.image == blank -%}collapsible-content-wrapper-narrow{%- else -%}page-width{%- endif -%}">
         <div
           class="collapsible-content__header{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           style="text-align: {{ section.settings.heading_alignment }};"
@@ -76,16 +111,17 @@
               >
                 <details
                   id="Details-{{ block.id }}-{{ section.id }}"
+                  data-collapsible
                   {% if section.settings.open_first_collapsible_row and forloop.first %}
                     open
                   {% endif %}
                 >
-                  <summary id="Summary-{{ block.id }}-{{ section.id }}">
+                  <summary id="Summary-{{ block.id }}-{{ section.id }}" role="button" aria-controls="CollapsibleAccordion-{{ block.id }}-{{ section.id }}" aria-expanded="{% if section.settings.open_first_collapsible_row and forloop.first %}true{% else %}false{% endif %}">
                     {% render 'icon-accordion', icon: block.settings.icon %}
                     <h3 class="accordion__title inline-richtext h4">
                       {{ block.settings.heading | default: block.settings.page.title | escape }}
                     </h3>
-                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                    <span class="accordion__icon">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
                   </summary>
                   <div
                     class="accordion__content rte"
@@ -105,6 +141,136 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Collapsible Content Ultra Pro: smooth height animation, keyboard nav, accessibility fixes
+  (function () {
+    const prefersReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animateOpen(details, summary, content) {
+      if (prefersReduceMotion) return;
+      const startHeight = 0;
+      content.style.display = 'block';
+      const endHeight = content.scrollHeight;
+      content.style.height = startHeight + 'px';
+      content.style.overflow = 'hidden';
+      requestAnimationFrame(() => {
+        content.style.transition = 'height 320ms cubic-bezier(.2,.8,.2,1)';
+        content.style.height = endHeight + 'px';
+      });
+      content.addEventListener('transitionend', function handler() {
+        content.style.height = '';
+        content.style.overflow = '';
+        content.style.transition = '';
+        content.removeEventListener('transitionend', handler);
+      });
+    }
+
+    function animateClose(details, summary, content) {
+      if (prefersReduceMotion) return;
+      const startHeight = content.scrollHeight;
+      content.style.height = startHeight + 'px';
+      content.style.overflow = 'hidden';
+      requestAnimationFrame(() => {
+        content.style.transition = 'height 260ms cubic-bezier(.4,.0,.2,1)';
+        content.style.height = '0px';
+      });
+      content.addEventListener('transitionend', function handler() {
+        content.style.display = '';
+        content.style.height = '';
+        content.style.overflow = '';
+        content.style.transition = '';
+        content.removeEventListener('transitionend', handler);
+      });
+    }
+
+    function enhanceSection(root) {
+      const detailsList = root.querySelectorAll('details[data-collapsible]');
+
+      detailsList.forEach((details) => {
+        const summary = details.querySelector('summary');
+        const content = details.querySelector('.accordion__content');
+
+        // Initialize aria-expanded
+        summary.setAttribute('aria-expanded', details.hasAttribute('open') ? 'true' : 'false');
+
+        // Prevent native instant jump behaviour for keyboard activation
+        summary.addEventListener('click', (e) => {
+          e.preventDefault();
+          const isOpen = details.hasAttribute('open');
+
+          if (isOpen) {
+            details.removeAttribute('open');
+            summary.setAttribute('aria-expanded', 'false');
+            animateClose(details, summary, content);
+          } else {
+            details.setAttribute('open', '');
+            summary.setAttribute('aria-expanded', 'true');
+            animateOpen(details, summary, content);
+          }
+        });
+
+        // Allow Enter/Space to toggle
+        summary.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            summary.click();
+          }
+        });
+
+        // Ensure content is hidden if closed (for non-JS fallback leave markup intact)
+        if (!details.hasAttribute('open')) {
+          content.style.display = 'none';
+        }
+      });
+
+      // Keyboard navigation: Up/Down/Home/End between summaries
+      const summaries = Array.from(root.querySelectorAll('summary'));
+      summaries.forEach((s, idx) => {
+        s.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = summaries[idx + 1] || summaries[0];
+            next.focus();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = summaries[idx - 1] || summaries[summaries.length - 1];
+            prev.focus();
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            summaries[0].focus();
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            summaries[summaries.length - 1].focus();
+          }
+        });
+      });
+
+      // Optional: observe dynamic changes to re-enhance
+      if ('MutationObserver' in window) {
+        const mo = new MutationObserver((mutations) => {
+          mutations.forEach((m) => {
+            if (m.type === 'childList') {
+              // Re-run enhancement if new details are added
+              enhanceSection(root);
+              mo.disconnect();
+            }
+          });
+        });
+        mo.observe(root, { childList: true, subtree: true });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('[data-section-id]');
+      sections.forEach((sec) => {
+        if (sec.closest('.collapsible-content')) {
+          enhanceSection(sec);
+        }
+      });
+    });
+  })();
+</script>
 
 {% schema %}
 {
