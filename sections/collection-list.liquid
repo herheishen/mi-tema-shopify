@@ -14,6 +14,60 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Ultra Pro Collection List */
+  @keyframes reveal-collection {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes card-hover-glow {
+    0%, 100% { box-shadow: 0 8px 24px rgba(var(--color-link-rgb,0,0),0.12); }
+    50% { box-shadow: 0 12px 32px rgba(var(--color-link-rgb,0,0),0.18); }
+  }
+
+  .collection-list__item {
+    animation: reveal-collection 0.5s cubic-bezier(.2,.8,.2,1);
+    animation-fill-mode: both;
+  }
+
+  .collection-list__item.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* Card glassmorphism and hover */
+  .card-wrapper { 
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(var(--color-link-rgb,0,0),0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  .collection-list__item:hover .card-wrapper { 
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+  }
+
+  /* Slider controls */
+  .slider-button { border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+  .slider-button:hover { background: rgba(var(--color-link-rgb,0,0),0.1); }
+  .slider-button:focus { outline: 2px solid var(--color-link); outline-offset: 3px; }
+
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .card-wrapper { background: rgba(255,255,255,0.04); border-color: rgba(var(--color-link-rgb,100,150,255),0.12); }
+    .collection-list__item:hover .card-wrapper { box-shadow: 0 16px 40px rgba(0,0,0,0.6); }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .collection-list__item { animation: none; opacity: 1; transform: none; }
+    .card-wrapper { transition: none; }
+    .slider-button { transition: none; }
+  }
+
 {%- endstyle -%}
 
 {%- liquid
@@ -25,7 +79,7 @@
 -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="collection-list-wrapper page-width isolate{% if show_mobile_slider %} page-width-desktop{% endif %}{% if section.settings.title == blank %} no-heading{% endif %}{% if section.settings.show_view_all == false or section.blocks.size > collections.size %} no-mobile-link{% endif %} section-{{ section.id }}-padding">
+  <div class="collection-list-wrapper page-width isolate{% if show_mobile_slider %} page-width-desktop{% endif %}{% if section.settings.title == blank %} no-heading{% endif %}{% if section.settings.show_view_all == false or section.blocks.size > collections.size %} no-mobile-link{% endif %} section-{{ section.id }}-padding" data-section-id="{{ section.id }}" data-collection-list>
     {%- unless section.settings.title == blank -%}
       <div class="title-wrapper-with-link{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% else %} title-wrapper--self-padded-mobile{% endif %} title-wrapper--no-top-margin">
         <h2
@@ -63,8 +117,10 @@
         {%- for block in section.blocks -%}
           <li
             id="Slide-{{ section.id }}-{{ forloop.index }}"
-            class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            class="collection-list__item grid__item reveal-item{% if show_mobile_slider %} slider__slide{% endif %}{% if block.settings.collection.featured_image == nil %} collection-list__item--no-media{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
             {{ block.shopify_attributes }}
+            role="listitem"
+            data-index="{{ forloop.index }}"
             {% if settings.animations_reveal_on_scroll %}
               data-cascade
               style="--animation-order: {{ forloop.index }};"
@@ -132,6 +188,87 @@
     {%- endif -%}
   </div>
 </div>
+
+<script>
+  // Collection List Ultra Pro: reveal animations, slider enhancements, analytics
+  (function () {
+    class CollectionListUltraPro {
+      constructor(root) {
+        this.root = root;
+        this.items = Array.from(root.querySelectorAll('.reveal-item'));
+        this.observer = null;
+        this.init();
+      }
+
+      init() {
+        this.setupRevealObserver();
+        this.setupSliderTracking();
+      }
+
+      setupRevealObserver() {
+        if ('IntersectionObserver' in window) {
+          this.observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const el = entry.target;
+                const delay = (parseInt(el.dataset.index) - 1) * 0.06;
+                el.style.animationDelay = delay + 's';
+                el.classList.add('is-visible');
+                this.observer.unobserve(el);
+              }
+            });
+          }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+
+          this.items.forEach((item) => this.observer.observe(item));
+        } else {
+          // Fallback: show all
+          this.items.forEach((item) => item.classList.add('is-visible'));
+        }
+      }
+
+      setupSliderTracking() {
+        const slider = this.root.querySelector('slider-component');
+        if (slider) {
+          const prevBtn = slider.querySelector('.slider-button--prev');
+          const nextBtn = slider.querySelector('.slider-button--next');
+
+          [prevBtn, nextBtn]?.forEach((btn) => {
+            btn?.addEventListener('click', () => {
+              const direction = btn === prevBtn ? 'prev' : 'next';
+              if (window.gtag) gtag('event', 'collection_list_slider', { direction });
+            });
+          });
+
+          // Track which item is visible (scroll into view event)
+          const listItems = slider.querySelectorAll('.slider__slide');
+          const sliderObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                const idx = Array.from(listItems).indexOf(entry.target) + 1;
+                if (window.gtag) gtag('event', 'collection_visible', { index: idx, total: listItems.length });
+              }
+            });
+          }, { threshold: 0.5 });
+
+          if ('IntersectionObserver' in window) {
+            listItems.forEach((item) => sliderObserver.observe(item));
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const roots = document.querySelectorAll('[data-collection-list]');
+      roots.forEach((root) => new CollectionListUltraPro(root));
+    });
+
+    // Reinit on section load
+    document.addEventListener('theme:section:load', (e) => {
+      const root = e.detail?.target?.querySelector('[data-collection-list]');
+      if (root) new CollectionListUltraPro(root);
+    });
+  })();
+</script>
 
 {% schema %}
 {
