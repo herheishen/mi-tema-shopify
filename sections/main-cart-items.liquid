@@ -6,6 +6,16 @@
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes heading-reveal { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes table-fade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes row-appear { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes item-image-reveal { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes quantity-input-focus { 0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.3); } 50% { box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.1); } }
+  @keyframes button-scale { from { transform: scale(1); } to { transform: scale(1.05); } }
+  @keyframes button-glow { 0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); } 50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5); } }
+  @keyframes warning-slide { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -17,6 +27,114 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  [data-cart-items-page] {
+    animation: page-fade-in 0.6s ease-out;
+  }
+
+  [data-cart-title] {
+    animation: heading-reveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  }
+
+  [data-cart-continue-link] {
+    animation: heading-reveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+
+  [data-cart-warnings] {
+    animation: warning-slide 0.6s ease-out 0.3s both;
+  }
+
+  [data-cart-table] {
+    animation: table-fade 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+  }
+
+  [data-cart-item] {
+    animation: row-appear 0.6s ease-out calc(0.1s * var(--item-index, 0));
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-item]:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.05) 100%);
+    transform: translateX(4px);
+  }
+
+  [data-cart-image] {
+    animation: item-image-reveal 0.7s ease-out calc(0.15s * var(--item-index, 0));
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-image]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(31, 38, 135, 0.15);
+  }
+
+  [data-quantity-input] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    animation: row-appear 0.6s ease-out calc(0.15s * var(--item-index, 0));
+  }
+
+  [data-quantity-input]:focus-within {
+    animation: quantity-input-focus 1s ease-in-out infinite;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+    border-color: rgba(102, 126, 234, 0.3);
+  }
+
+  [data-remove-button] {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.3) 0%, rgba(185, 28, 28, 0.2) 100%);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 6px;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  [data-remove-button]:hover {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.5) 0%, rgba(185, 28, 28, 0.35) 100%);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    transform: scale(1.08);
+  }
+
+  [data-cart-item-price] {
+    animation: row-appear 0.6s ease-out calc(0.2s * var(--item-index, 0));
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+  }
+
+  [data-cart-item-discount] {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.1) 100%);
+    border-left: 3px solid rgba(34, 197, 94, 0.4);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-item-discount]:hover {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.15) 100%);
+    transform: translateX(2px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-quantity-input] {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 {%- endstyle -%}
 
 {%- unless settings.cart_type == 'drawer' -%}
@@ -25,16 +143,16 @@
 
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
-<cart-items class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
+<cart-items class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}" data-cart-items-page data-section-id="{{ section.id }}" data-cart-state="{% if cart == empty %}empty{% else %}filled{% endif %}" data-item-count="{{ cart.item_count }}">
   <div class="page-width">
     <div class="title-wrapper-with-link">
-      <h1 class="title title--primary">{{ 'sections.cart.title' | t }}</h1>
-      <a href="{{ routes.all_products_collection_url }}" class="underlined-link">
+      <h1 class="title title--primary" data-cart-title data-cart-items-count="{{ cart.item_count }}">{{ 'sections.cart.title' | t }}</h1>
+      <a href="{{ routes.all_products_collection_url }}" class="underlined-link" data-cart-continue-link>
         {{- 'general.continue_shopping' | t -}}
       </a>
     </div>
 
-    <div class="cart__warnings">
+    <div class="cart__warnings" data-cart-warnings>
       <h1 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h1>
       <a href="{{ routes.all_products_collection_url }}" class="button">
         {{ 'general.continue_shopping' | t }}
@@ -49,10 +167,10 @@
     </div>
 
     <form action="{{ routes.cart_url }}" class="cart__contents critical-hidden" method="post" id="cart">
-      <div class="cart__items" id="main-cart-items" data-id="{{ section.id }}">
+      <div class="cart__items" id="main-cart-items" data-id="{{ section.id }}" data-cart-table>
         <div class="js-contents">
           {%- if cart != empty -%}
-            <table class="cart-items">
+            <table class="cart-items" role="table" aria-label="Shopping cart items">
               <caption class="visually-hidden">
                 {{ 'sections.cart.title' | t }}
               </caption>
@@ -82,6 +200,11 @@
                   <tr
                     class="cart-item {% if item.parent_relationship.parent != null %}cart-item__nested-line{% endif %}"
                     id="CartItem-{{ item.index | plus: 1 }}"
+                    data-cart-item
+                    data-item-index="{{ item.index | plus: 1 }}"
+                    data-variant-id="{{ item.variant.id }}"
+                    data-product-id="{{ item.product.id }}"
+                    style="--item-index: {{ item.index }}"
                     {% if item.parent_relationship.parent != null %}
                       aria-label="{{- 'products.product.nested_label' | t: title: item.product.title, parent_title: item.parent_relationship.parent.title | escape -}}"
                     {% endif %}
@@ -90,7 +213,7 @@
                       {% if item.image %}
                         {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
                         <a href="{{ item.url }}" class="cart-item__link" aria-hidden="true" tabindex="-1"> </a>
-                        <div class="cart-item__image-container gradient {% if item.parent_relationship.parent == null %}global-media-settings{% endif %}">
+                        <div class="cart-item__image-container gradient {% if item.parent_relationship.parent == null %}global-media-settings{% endif %}" data-cart-image>
                           <img
                             src="{{ item.image | image_url: width: 300 }}"
                             class="cart-item__image {% if item.parent_relationship.parent != null %}global-media-settings{% endif %}"
@@ -98,6 +221,7 @@
                             loading="lazy"
                             width="150"
                             height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
+                            data-product-image
                           >
                         </div>
                       {% endif %}
@@ -167,9 +291,9 @@
                         <p class="product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
                       {%- endif -%}
 
-                      <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                      <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}" data-cart-discounts>
                         {%- for discount in item.line_level_discount_allocations -%}
-                          <li class="discounts__discount">
+                          <li class="discounts__discount" data-cart-item-discount data-discount-id="{{ discount.discount_application.id }}">
                             {{- 'icon-discount.svg' | inline_asset_content -}}
                             {{ discount.discount_application.title | escape }}
                           </li>
@@ -177,7 +301,7 @@
                       </ul>
                     </td>
 
-                    <td class="cart-item__totals right medium-hide large-up-hide">
+                    <td class="cart-item__totals right medium-hide large-up-hide" data-cart-item-price>
                       {%- render 'loading-spinner' -%}
                       <div class="cart-item__price-wrapper">
                         {%- if item.original_line_price != item.final_line_price -%}
@@ -225,12 +349,13 @@
                           <label class="visually-hidden" for="Quantity-{{ item.index | plus: 1 }}">
                             {{ 'products.product.quantity.label' | t }}
                           </label>
-                          <div class="quantity-popover-container{% if has_qty_rules or has_vol_pricing %} quantity-popover-container--hover{% endif %}">
+                          <div class="quantity-popover-container{% if has_qty_rules or has_vol_pricing %} quantity-popover-container--hover{% endif %}" data-quantity-input>
                             {%- if has_qty_rules or has_vol_pricing -%}
                               <button
                                 type="button"
                                 aria-expanded="false"
                                 class="quantity-popover__info-button quantity-popover__info-button--icon-only button button--tertiary small-hide medium-hide"
+                                data-qty-info-button
                               >
                                 {{- 'icon-info.svg' | inline_asset_content -}}
                               </button>
@@ -241,6 +366,7 @@
                                 class="quantity__button"
                                 name="minus"
                                 type="button"
+                                data-qty-minus-btn
                                 {% if can_update_quantity == false %}
                                   disabled
                                 {% endif %}
@@ -255,6 +381,7 @@
                               <input
                                 class="quantity__input"
                                 data-quantity-variant-id="{{ item.variant.id }}"
+                                data-item-quantity-input
                                 type="number"
                                 name="updates[]"
                                 value="{{ item.quantity }}"
@@ -278,6 +405,7 @@
                                 class="quantity__button"
                                 name="plus"
                                 type="button"
+                                data-qty-plus-btn
                                 {% if can_update_quantity == false %}
                                   disabled
                                 {% endif %}
@@ -294,6 +422,8 @@
                           <cart-remove-button
                             id="Remove-{{ item.index | plus: 1 }}"
                             data-index="{{ item.index | plus: 1 }}"
+                            data-remove-button
+                            data-remove-item-id="{{ item.variant.id }}"
                             {% assign can_remove = item.instructions.can_remove | default: true %}
                             {% if can_remove == false %}
                               class="hidden"
@@ -303,6 +433,7 @@
                               href="{{ item.url_to_remove }}"
                               class="button button--tertiary"
                               aria-label="{{ 'sections.cart.remove_title' | t: title: item.title | escape }}"
+                              data-remove-link
                             >
                               <span class="svg-wrapper">
                                 {{- 'icon-remove.svg' | inline_asset_content -}}
@@ -404,7 +535,7 @@
                       </quantity-popover>
                     </td>
 
-                    <td class="cart-item__totals right small-hide">
+                    <td class="cart-item__totals right small-hide" data-cart-item-price>
                       {%- render 'loading-spinner' -%}
                       <div class="cart-item__price-wrapper">
                         {%- if item.original_line_price != item.final_line_price -%}
@@ -456,6 +587,169 @@
     </form>
   </div>
 </cart-items>
+
+<script>
+  class CartItemsPageUltraPro {
+    constructor() {
+      this.page = document.querySelector('[data-cart-items-page]');
+      this.config = {
+        sectionId: this.page?.getAttribute('data-section-id'),
+        cartState: this.page?.getAttribute('data-cart-state'),
+        itemCount: parseInt(this.page?.getAttribute('data-item-count') || '0')
+      };
+      if (!this.page) return;
+      this.init();
+    }
+
+    init() {
+      this.trackPageView();
+      this.setupItemInteractions();
+      this.setupQuantityTracking();
+      this.setupRemovalTracking();
+      this.setupImageTracking();
+      this.setupIntersectionObserver();
+    }
+
+    trackPageView() {
+      const cartTotal = this.calculateCartTotal();
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'cart_items_view', {
+          cart_state: this.config.cartState,
+          item_count: this.config.itemCount,
+          cart_total: cartTotal,
+          section_id: this.config.sectionId,
+          page_location: window.location.href
+        });
+      }
+    }
+
+    setupItemInteractions() {
+      document.querySelectorAll('[data-cart-item]').forEach((item) => {
+        const itemIndex = item.getAttribute('data-item-index');
+        const variantId = item.getAttribute('data-variant-id');
+        const productId = item.getAttribute('data-product-id');
+        item.addEventListener('mouseenter', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'cart_item_hover', {
+              item_index: itemIndex,
+              variant_id: variantId,
+              product_id: productId,
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      });
+    }
+
+    setupQuantityTracking() {
+      document.querySelectorAll('[data-item-quantity-input]').forEach((input) => {
+        let initialQty = input.value;
+        input.addEventListener('change', () => {
+          const newQty = input.value;
+          const variantId = input.getAttribute('data-quantity-variant-id');
+          const cartItem = input.closest('[data-cart-item]');
+          if (newQty !== initialQty && typeof gtag !== 'undefined') {
+            gtag('event', 'cart_quantity_change', {
+              old_quantity: initialQty,
+              new_quantity: newQty,
+              variant_id: variantId,
+              product_id: cartItem?.getAttribute('data-product-id'),
+              section_id: this.config.sectionId,
+              timestamp: new Date().toISOString()
+            });
+            initialQty = newQty;
+          }
+        });
+        input.addEventListener('focus', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'cart_quantity_focus', {
+              current_quantity: input.value,
+              variant_id: input.getAttribute('data-quantity-variant-id'),
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      });
+      document.querySelectorAll('[data-qty-minus-btn], [data-qty-plus-btn]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const input = btn.closest('quantity-input')?.querySelector('[data-item-quantity-input]');
+          if (input && typeof gtag !== 'undefined') {
+            gtag('event', 'cart_qty_button_click', {
+              button_type: btn.getAttribute('data-qty-minus-btn') ? 'minus' : 'plus',
+              new_quantity: input.value,
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      });
+    }
+
+    setupRemovalTracking() {
+      document.querySelectorAll('[data-remove-button]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const itemIndex = btn.getAttribute('data-index');
+          const removeItemId = btn.getAttribute('data-remove-item-id');
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'cart_item_removed', {
+              item_index: itemIndex,
+              variant_id: removeItemId,
+              cart_total_before: this.calculateCartTotal(),
+              section_id: this.config.sectionId,
+              timestamp: new Date().toISOString()
+            });
+          }
+        });
+      });
+    }
+
+    setupImageTracking() {
+      document.querySelectorAll('[data-cart-image]').forEach((imgContainer) => {
+        imgContainer.addEventListener('mouseenter', () => {
+          const cartItem = imgContainer.closest('[data-cart-item]');
+          if (cartItem && typeof gtag !== 'undefined') {
+            gtag('event', 'cart_item_image_hover', {
+              product_id: cartItem.getAttribute('data-product-id'),
+              variant_id: cartItem.getAttribute('data-variant-id'),
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      });
+    }
+
+    setupIntersectionObserver() {
+      const observers = [
+        { selector: '[data-cart-item]', event: 'cart_item_visible' },
+        { selector: '[data-cart-item-discount]', event: 'cart_discount_visible' },
+        { selector: '[data-cart-item-price]', event: 'cart_item_price_visible' }
+      ];
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const observerConfig = observers.find(o => entry.target.matches(o.selector));
+            if (observerConfig && typeof gtag !== 'undefined') {
+              gtag('event', observerConfig.event, {
+                section_id: this.config.sectionId,
+                element_type: entry.target.dataset.eventType || 'cart_element'
+              });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      observers.forEach(o => { document.querySelectorAll(o.selector).forEach(el => observer.observe(el)); });
+    }
+
+    calculateCartTotal() {
+      const totals = Array.from(document.querySelectorAll('[data-cart-item-price]')).map(el => {
+        const text = el.textContent.match(/\$([\d,.]+)/)?.[1];
+        return parseFloat(text?.replace(/,/g, '') || '0');
+      });
+      return totals.reduce((a, b) => a + b, 0).toFixed(2);
+    }
+  }
+  window.addEventListener('load', () => { new CartItemsPageUltraPro(); });
+</script>
 
 {% schema %}
 {
