@@ -2,28 +2,125 @@
 {{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes title-reveal { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes description-fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes image-zoom-in { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+  @keyframes image-float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+  @keyframes glow-pulse { 0%, 100% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2); } 50% { box-shadow: 0 12px 48px rgba(102, 126, 234, 0.35); } }
+  @keyframes text-wrapper-slide { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
   @media screen and (max-width: 749px) {
     .collection-hero--with-image .collection-hero__inner {
       padding-bottom: calc({{ settings.media_shadow_vertical_offset | at_least: 0 }}px + 2rem);
     }
   }
+
+  [data-collection-hero] {
+    animation: page-fade-in 0.6s ease-out;
+  }
+
+  [data-collection-hero-inner] {
+    animation: text-wrapper-slide 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+  }
+
+  [data-collection-title] {
+    animation: title-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.08) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: all 0.3s ease;
+  }
+
+  [data-collection-title]:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.15) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  [data-collection-description] {
+    animation: description-fade 0.8s ease-out 0.3s both;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  [data-collection-description]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+    border-color: rgba(102, 126, 234, 0.2);
+  }
+
+  [data-collection-image] {
+    animation: image-zoom-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both, image-float 3s ease-in-out infinite 1.3s;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 48px rgba(31, 38, 135, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(8px);
+  }
+
+  [data-collection-image]:hover {
+    animation: image-float 2.5s ease-in-out infinite, glow-pulse 2s ease-in-out infinite;
+    box-shadow: 0 16px 56px rgba(31, 38, 135, 0.25);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: scale(1.02) translateY(-10px);
+  }
+
+  [data-collection-image] img {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  [data-collection-image]:hover img {
+    transform: scale(1.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-collection-description] {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    }
+
+    [data-collection-image] {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 {%- endstyle -%}
 
-<div class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient">
-  <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+<div class="collection-hero{% if section.settings.show_collection_image and collection.image %} collection-hero--with-image{% endif %} color-{{ section.settings.color_scheme }} gradient" data-collection-hero data-section-id="{{ section.id }}" data-collection-name="{{ collection.title | escape }}" role="banner">
+  <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}" data-collection-hero-inner>
     <div class="collection-hero__text-wrapper">
-      <h1 class="collection-hero__title">
+      <h1 class="collection-hero__title" data-collection-title data-collection-id="{{ collection.id }}">
         <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
         {{- collection.title | escape -}}
       </h1>
 
       {%- if section.settings.show_collection_description -%}
-        <div class="collection-hero__description rte">{{ collection.description }}</div>
+        <div class="collection-hero__description rte" data-collection-description data-has-description="true">
+          {{ collection.description }}
+        </div>
       {%- endif -%}
     </div>
 
     {%- if section.settings.show_collection_image and collection.image -%}
-      <div class="collection-hero__image-container media gradient">
+      <div class="collection-hero__image-container media gradient" data-collection-image data-image-present="true">
         <img
           srcset="
             {%- if collection.image.width >= 165 -%}{{ collection.image | image_url: width: 165 }} 165w,{%- endif -%}
@@ -39,11 +136,135 @@
           alt="{{ collection.image.alt | escape }}"
           width="{{ collection.image.width }}"
           height="{{ collection.image.height }}"
+          data-collection-banner-image
         >
       </div>
     {%- endif -%}
   </div>
 </div>
+
+<script>
+  class CollectionBannerUltraPro {
+    constructor() {
+      this.banner = document.querySelector('[data-collection-hero]');
+      this.config = {
+        sectionId: this.banner?.getAttribute('data-section-id'),
+        collectionName: this.banner?.getAttribute('data-collection-name'),
+        collectionId: document.querySelector('[data-collection-title]')?.getAttribute('data-collection-id')
+      };
+      if (!this.banner) return;
+      this.init();
+    }
+
+    init() {
+      this.trackBannerView();
+      this.setupTitleInteractions();
+      this.setupDescriptionTracking();
+      this.setupImageTracking();
+      this.setupIntersectionObserver();
+    }
+
+    trackBannerView() {
+      const hasImage = this.banner?.querySelector('[data-collection-image]') !== null;
+      const hasDescription = this.banner?.querySelector('[data-collection-description]') !== null;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'collection_banner_view', {
+          collection_id: this.config.collectionId,
+          collection_name: this.config.collectionName,
+          has_image: hasImage,
+          has_description: hasDescription,
+          section_id: this.config.sectionId,
+          page_location: window.location.href
+        });
+      }
+    }
+
+    setupTitleInteractions() {
+      const title = this.banner?.querySelector('[data-collection-title]');
+      if (!title) return;
+      title.addEventListener('mouseenter', () => {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'collection_title_hover', {
+            collection_name: this.config.collectionName,
+            collection_id: this.config.collectionId,
+            section_id: this.config.sectionId
+          });
+        }
+      });
+    }
+
+    setupDescriptionTracking() {
+      const description = this.banner?.querySelector('[data-collection-description]');
+      if (!description) return;
+      let descriptionScrolled = false;
+      description.addEventListener('mouseenter', () => {
+        if (!descriptionScrolled && typeof gtag !== 'undefined') {
+          gtag('event', 'collection_description_hover', {
+            collection_id: this.config.collectionId,
+            description_length: description.textContent.trim().length,
+            section_id: this.config.sectionId
+          });
+          descriptionScrolled = true;
+        }
+      });
+    }
+
+    setupImageTracking() {
+      const imageContainer = this.banner?.querySelector('[data-collection-image]');
+      const image = this.banner?.querySelector('[data-collection-banner-image]');
+      if (!imageContainer) return;
+      imageContainer.addEventListener('mouseenter', () => {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'collection_image_hover', {
+            collection_name: this.config.collectionName,
+            image_alt: image?.getAttribute('alt') || 'collection image',
+            section_id: this.config.sectionId
+          });
+        }
+      });
+      if (image) {
+        image.addEventListener('load', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'collection_image_loaded', {
+              collection_id: this.config.collectionId,
+              image_width: image.naturalWidth,
+              image_height: image.naturalHeight,
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      }
+    }
+
+    setupIntersectionObserver() {
+      const elements = [
+        { selector: '[data-collection-title]', event: 'collection_title_visible' },
+        { selector: '[data-collection-description]', event: 'collection_description_visible' },
+        { selector: '[data-collection-image]', event: 'collection_image_visible' }
+      ];
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const elementConfig = elements.find(e => entry.target.matches(e.selector));
+            if (elementConfig && typeof gtag !== 'undefined') {
+              gtag('event', elementConfig.event, {
+                collection_id: this.config.collectionId,
+                section_id: this.config.sectionId,
+                timestamp: new Date().toISOString()
+              });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      elements.forEach(e => {
+        const el = this.banner?.querySelector(e.selector);
+        if (el) observer.observe(el);
+      });
+    }
+  }
+  window.addEventListener('load', () => { new CollectionBannerUltraPro(); });
+</script>
 
 {% schema %}
 {
