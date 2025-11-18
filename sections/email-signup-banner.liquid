@@ -4,6 +4,11 @@
 {{ 'section-email-signup-banner.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes banner-slide-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes input-focus-glow { from { box-shadow: 0 0 0 0 rgba(var(--color-link-rgb,0,0),0.3); } to { box-shadow: 0 0 0 8px rgba(var(--color-link-rgb,0,0),0); } }
+  @keyframes success-shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+  @keyframes shake-input { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+
   #Banner-{{ section.id }}::after {
     opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
   }
@@ -24,11 +29,121 @@
       display: block;
     }
   {%- endif -%}
+
+  /* Ultra Pro Newsletter Form */
+  #Banner-{{ section.id }} .email-signup-banner__box {
+    animation: banner-slide-in 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+
+  #Banner-{{ section.id }} .field__input {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+    border: 2px solid rgba(var(--color-link-rgb,0,0),0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    font-size: 16px;
+  }
+
+  #Banner-{{ section.id }} .field__input:focus {
+    outline: none;
+    border-color: var(--color-link);
+    background: rgba(255,255,255,1);
+    box-shadow: 0 0 0 4px rgba(var(--color-link-rgb,0,0),0.1), 0 8px 20px rgba(var(--color-link-rgb,0,0),0.15);
+    animation: input-focus-glow 0.4s ease-out;
+  }
+
+  #Banner-{{ section.id }} .field__input[aria-invalid="true"] {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.05);
+    animation: shake-input 0.4s ease;
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__button {
+    border-radius: 12px;
+    padding: 12px 20px;
+    transition: all 0.2s cubic-bezier(.2,.8,.2,1);
+    background: var(--color-link);
+    color: var(--color-button-text);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(var(--color-link-rgb,0,0),0.3);
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__button:active {
+    transform: translateY(0);
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-top: 8px;
+    font-weight: 500;
+    animation: banner-slide-in 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  #Banner-{{ section.id }} .newsletter-form__message--success {
+    background: rgba(34,197,94,0.1);
+    border: 1px solid #22c55e;
+    color: #16a34a;
+  }
+
+  #Banner-{{ section.id }} .form__message {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid #ef4444;
+    color: #b91c1c;
+  }
+
+  /* Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    #Banner-{{ section.id }} .field__input {
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.15);
+      color: #fff;
+    }
+    #Banner-{{ section.id }} .field__input:focus {
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.4);
+      box-shadow: 0 0 0 4px rgba(var(--color-link-rgb,100,150,255),0.1), 0 8px 20px rgba(0,0,0,0.6);
+    }
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    #Banner-{{ section.id }} .email-signup-banner__box,
+    #Banner-{{ section.id }} .field__input,
+    #Banner-{{ section.id }} .newsletter-form__button,
+    #Banner-{{ section.id }} .newsletter-form__message {
+      animation: none;
+      transition: none;
+    }
+  }
 {%- endstyle -%}
 
 <div
   id="Banner-{{ section.id }}"
   class="email-signup-banner banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.image_height == 'adapt-image' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}"
+  data-email-signup-banner
+  data-section-id="{{ section.id }}"
+  role="region"
+  aria-label="Newsletter signup"
 >
   {%- if section.settings.show_background_image -%}
     <div class="banner__media{% if section.settings.image != blank %} media{% endif %}">
@@ -71,10 +186,10 @@
               {{ block.settings.text }}
             </div>
           {%- when 'email_form' -%}
-            <div {{ block.shopify_attributes }}>
-              {% form 'customer', class: 'newsletter-form' %}
+            <div {{ block.shopify_attributes }} data-newsletter-form>
+              {% form 'customer', class: 'newsletter-form', id: 'EmailForm' + section.id %}
                 <input type="hidden" name="contact[tags]" value="newsletter">
-                <div class="newsletter-form__field-wrapper">
+                <div class="newsletter-form__field-wrapper" data-form-wrapper>
                   <div class="field">
                     <input
                       id="NewsletterForm--{{ section.id }}"
@@ -86,6 +201,7 @@
                       autocorrect="off"
                       autocapitalize="off"
                       autocomplete="email"
+                      data-email-input
                       {% if form.errors %}
                         autofocus
                         aria-invalid="true"
@@ -96,28 +212,23 @@
                       placeholder="{{ 'newsletter.label' | t }}"
                       required
                     >
-                    <label class="field__label" for="NewsletterForm--{{ section.id }}">
-                      {{ 'newsletter.label' | t }}
-                    </label>
+                    <label class="field__label" for="NewsletterForm--{{ section.id }}">{{ 'newsletter.label' | t }}</label>
                     <button
                       type="submit"
                       class="newsletter-form__button field__button"
                       name="commit"
                       id="Subscribe"
                       aria-label="{{ 'newsletter.button_label' | t }}"
+                      data-submit-button
                     >
-                      <span class="svg-wrapper">
-                        {{- 'icon-arrow.svg' | inline_asset_content -}}
-                      </span>
+                      <span class="svg-wrapper" data-button-text>{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
+                      <span class="svg-wrapper" data-button-loader style="display: none;" aria-hidden="true">…</span>
                     </button>
                   </div>
                   {%- if form.errors -%}
-                    <small class="newsletter-form__message form__message" id="Newsletter-error--{{ section.id }}">
-                      <span class="svg-wrapper">
-                        {{- 'icon-error.svg' | inline_asset_content -}}
-                      </span>
-                      {{- form.errors.translated_fields.email | capitalize }}
-                      {{ form.errors.messages.email -}}
+                    <small class="newsletter-form__message form__message" id="Newsletter-error--{{ section.id }}" role="alert">
+                      <span class="svg-wrapper">{{- 'icon-error.svg' | inline_asset_content -}}</span>
+                      {{- form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email -}}
                     </small>
                   {%- endif -%}
                 </div>
@@ -125,12 +236,11 @@
                   <h3
                     class="newsletter-form__message newsletter-form__message--success form__message"
                     id="Newsletter-success--{{ section.id }}"
+                    role="status"
                     tabindex="-1"
                     autofocus
                   >
-                    <span class="svg-wrapper">
-                      {{- 'icon-success.svg' | inline_asset_content -}}
-                    </span>
+                    <span class="svg-wrapper">{{- 'icon-success.svg' | inline_asset_content -}}</span>
                     {{- 'newsletter.success' | t }}
                   </h3>
                 {%- endif -%}
@@ -141,6 +251,93 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Email Signup Banner Ultra Pro: validation, loading state, analytics
+  (function () {
+    class EmailSignupBannerUltraPro {
+      constructor(el) {
+        this.el = el;
+        this.sectionId = el.getAttribute('data-section-id');
+        this.form = el.querySelector('form');
+        this.emailInput = el.querySelector('[data-email-input]');
+        this.submitBtn = el.querySelector('[data-submit-button]');
+        this.init();
+      }
+
+      init() {
+        if (!this.form || !this.emailInput) return;
+        this.setupValidation();
+        this.setupSubmit();
+        this.trackViewability();
+      }
+
+      validateEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+      }
+
+      setupValidation() {
+        this.emailInput.addEventListener('blur', () => {
+          const isValid = !this.emailInput.value.trim() || this.validateEmail(this.emailInput.value.trim());
+          if (!isValid) {
+            this.emailInput.setAttribute('aria-invalid', 'true');
+          } else {
+            this.emailInput.removeAttribute('aria-invalid');
+          }
+        });
+      }
+
+      setupSubmit() {
+        this.form.addEventListener('submit', (e) => {
+          const email = this.emailInput.value.trim();
+          if (!email || !this.validateEmail(email)) {
+            e.preventDefault();
+            this.emailInput.setAttribute('aria-invalid', 'true');
+            this.emailInput.focus();
+            if (window.gtag) gtag('event', 'newsletter_signup_error', { section_id: this.sectionId });
+          } else {
+            this.setLoadingState(true);
+            if (window.gtag) gtag('event', 'newsletter_signup_submit', { section_id: this.sectionId, email: email.split('@')[0] + '@***' });
+          }
+        });
+      }
+
+      setLoadingState(loading) {
+        if (!this.submitBtn) return;
+        const text = this.submitBtn.querySelector('[data-button-text]');
+        const loader = this.submitBtn.querySelector('[data-button-loader]');
+        if (loading) {
+          this.submitBtn.disabled = true;
+          if (text) text.style.display = 'none';
+          if (loader) loader.style.display = 'inline';
+        } else {
+          this.submitBtn.disabled = false;
+          if (text) text.style.display = 'inline';
+          if (loader) loader.style.display = 'none';
+        }
+      }
+
+      trackViewability() {
+        if (!('IntersectionObserver' in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (window.gtag) gtag('event', 'newsletter_banner_visible', { section_id: this.sectionId });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(this.el);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const banners = document.querySelectorAll('[data-email-signup-banner]');
+      banners.forEach((el) => new EmailSignupBannerUltraPro(el));
+    });
+  })();
+</script>
 
 {% schema %}
 {
