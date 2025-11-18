@@ -12,6 +12,165 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* ========== ULTRA PRO GLASSMORPHISM & ANIMATIONS ========== */
+  
+  /* Glassmorphism content container */
+  #ImageWithText--{{ section.id }} {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    animation: content-slide-fade 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #ImageWithText--{{ section.id }}:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-4px);
+  }
+
+  /* Content animations */
+  @keyframes content-slide-fade {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Heading animation */
+  #ImageWithText--{{ section.id }} .image-with-text__heading {
+    animation: heading-scale-fade 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+
+  @keyframes heading-scale-fade {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Text animation with stagger */
+  #ImageWithText--{{ section.id }} .image-with-text__text {
+    animation: text-reveal 0.6s ease-out 0.3s both;
+  }
+
+  @keyframes text-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Button glassmorphism with hover effects */
+  #ImageWithText--{{ section.id }} .button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: button-fade-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+  }
+
+  #ImageWithText--{{ section.id }} .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.4s ease;
+  }
+
+  #ImageWithText--{{ section.id }} .button:hover::before {
+    left: 100%;
+  }
+
+  #ImageWithText--{{ section.id }} .button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15)) !important;
+  }
+
+  @keyframes button-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Image animation */
+  .image-with-text__media {
+    animation: image-reveal 0.8s ease-out both;
+  }
+
+  @keyframes image-reveal {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    #ImageWithText--{{ section.id }},
+    #ImageWithText--{{ section.id }} .image-with-text__heading,
+    #ImageWithText--{{ section.id }} .image-with-text__text,
+    #ImageWithText--{{ section.id }} .button,
+    .image-with-text__media {
+      animation: none;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    #ImageWithText--{{ section.id }} {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+
+    #ImageWithText--{{ section.id }}:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    }
+
+    #ImageWithText--{{ section.id }} .button {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    #ImageWithText--{{ section.id }} .button:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)) !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -24,9 +183,9 @@
   endif
 -%}
 
-<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}">
+<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.section_color_scheme }}" data-image-with-text data-section-id="{{ section.id }}">
   <div class="page-width">
-    <div class="image-with-text image-with-text--{{ section.settings.content_layout }} isolate{% if settings.text_boxes_border_thickness > 0 and settings.text_boxes_border_opacity > 0 and settings.media_border_thickness > 0 and settings.media_border_opacity > 0 %} collapse-borders{% endif %}{% unless section.settings.color_scheme == section.settings.section_color_scheme and settings.media_border_thickness > 0 and settings.text_boxes_shadow_opacity == 0 and settings.text_boxes_border_thickness == 0 or settings.text_boxes_border_opacity == 0 %} collapse-corners{% endunless %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    <div class="image-with-text image-with-text--{{ section.settings.content_layout }} isolate{% if settings.text_boxes_border_thickness > 0 and settings.text_boxes_border_opacity > 0 and settings.media_border_thickness > 0 and settings.media_border_opacity > 0 %} collapse-borders{% endif %}{% unless section.settings.color_scheme == section.settings.section_color_scheme and settings.media_border_thickness > 0 and settings.text_boxes_shadow_opacity == 0 and settings.text_boxes_border_thickness == 0 or settings.text_boxes_border_opacity == 0 %} collapse-corners{% endunless %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-layout="{{ section.settings.content_layout }}" data-image-behavior="{{ section.settings.image_behavior }}">
       <div class="image-with-text__grid grid grid--gapless grid--1-col grid--{% if section.settings.desktop_image_width == 'medium' %}2-col-tablet{% else %}3-col-tablet{% endif %}{% if section.settings.layout == 'text_first' %} image-with-text__grid--reverse{% endif %}">
         <div class="image-with-text__media-item image-with-text__media-item--{{ section.settings.desktop_image_width }} image-with-text__media-item--{{ section.settings.desktop_content_position }} grid__item">
           <div
@@ -93,6 +252,9 @@
                         href="{{ block.settings.button_link }}"
                       {% endif %}
                       class="button{% if block.settings.button_style_secondary %} button--secondary{% else %} button--primary{% endif %}"
+                      data-button-label="{{ block.settings.button_label | escape }}"
+                      data-button-link="{{ block.settings.button_link }}"
+                      aria-label="{{ block.settings.button_label | escape }}"
                       {{ block.shopify_attributes }}
                     >
                       {{ block.settings.button_label | escape }}
@@ -106,6 +268,84 @@
     </div>
   </div>
 </div>
+
+<script>
+  // ========== ULTRA PRO IMAGE-WITH-TEXT ANALYTICS & INTERACTIONS ==========
+  class ImageWithTextUltraPro {
+    constructor(sectionId) {
+      this.container = document.querySelector(`[data-section-id="${sectionId}"]`);
+      this.contentElement = document.getElementById(`ImageWithText--${sectionId}`);
+      this.sectionId = sectionId;
+      
+      if (!this.container) return;
+
+      this.isVisible = false;
+      this.init();
+    }
+
+    init() {
+      this.setupIntersectionObserver();
+      this.setupButtonTracking();
+    }
+
+    setupIntersectionObserver() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.isVisible) {
+              this.isVisible = true;
+              this.trackSectionVisible();
+            }
+          });
+        },
+        { threshold: 0.25, rootMargin: '0px 0px -50px 0px' }
+      );
+
+      observer.observe(this.container);
+    }
+
+    setupButtonTracking() {
+      const buttons = this.container.querySelectorAll('.button');
+      buttons.forEach((button, index) => {
+        button.addEventListener('click', (e) => {
+          this.trackButtonClick(button, index);
+        });
+      });
+    }
+
+    trackSectionVisible() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'image_with_text_visible', {
+          section_id: this.sectionId,
+          layout: this.container.dataset.layout,
+          image_behavior: this.container.dataset.imageBehavior,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    trackButtonClick(button, index) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'image_with_text_button_click', {
+          section_id: this.sectionId,
+          button_index: index,
+          button_label: button.dataset.buttonLabel,
+          button_link: button.dataset.buttonLink,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ImageWithTextUltraPro('{{ section.id }}');
+    });
+  } else {
+    new ImageWithTextUltraPro('{{ section.id }}');
+  }
+</script>
 
 {% schema %}
 {
