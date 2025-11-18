@@ -4,6 +4,15 @@
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes section-slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes note-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes totals-appear { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes discount-list-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes button-scale { from { transform: scale(1); } to { transform: scale(1.02); } }
+  @keyframes button-glow { 0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); } 50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5); } }
+  @keyframes button-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(102, 126, 234, 0); } }
+
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -15,17 +24,145 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  [data-cart-footer] {
+    animation: page-fade-in 0.6s ease-out;
+  }
+
+  [data-cart-section] {
+    animation: section-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+
+  [data-cart-note] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 1.5rem;
+    animation: note-fade 0.7s ease-out 0.3s both;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-note]:hover,
+  [data-cart-note] textarea:focus {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+  }
+
+  [data-cart-note] textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #333;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-note] textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  [data-cart-totals] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 2rem;
+    animation: totals-appear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-totals]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+    transform: translateY(-2px);
+  }
+
+  [data-cart-discounts] {
+    animation: discount-list-fade 0.6s ease-out 0.5s both;
+  }
+
+  [data-cart-discounts] li {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-left: 3px solid rgba(102, 126, 234, 0.4);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  [data-cart-discounts] li:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.15) 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    transform: translateX(4px);
+  }
+
+  [data-checkout-button] {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.6);
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    animation: button-glow 1.5s ease-in-out infinite;
+  }
+
+  [data-checkout-button]:hover:not(:disabled) {
+    animation: button-scale 0.3s ease-out;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+  }
+
+  [data-checkout-button]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    animation: none;
+  }
+
+  [data-additional-checkout] {
+    animation: section-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;
+  }
+
+  [data-cart-errors] {
+    animation: section-slide-up 0.6s ease-out 0.7s both;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-cart-note] textarea {
+      color: #f5f5f5;
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 {%- endstyle -%}
 
 <div
   class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
   id="main-cart-footer"
   data-id="{{ section.id }}"
+  data-cart-footer
+  data-section-id="{{ section.id }}"
+  data-cart-state="{% if cart == empty %}empty{% else %}filled{% endif %}"
+  data-cart-items="{{ cart.item_count }}"
+  role="region"
+  aria-label="Cart summary"
 >
   <div class="page-width">
-    <div class="cart__footer isolate section-{{ section.id }}-padding">
+    <div class="cart__footer isolate section-{{ section.id }}-padding" data-cart-section>
       {%- if settings.show_cart_note -%}
-        <cart-note class="cart__note field">
+        <cart-note class="cart__note field" data-cart-note>
           <label for="Cart-note">{{ 'sections.cart.note' | t }}</label>
           <textarea
             class="text-area field__input"
@@ -33,6 +170,7 @@
             form="cart"
             id="Cart-note"
             placeholder="{{ 'sections.cart.note' | t }}"
+            data-note-input
           >{{ cart.note }}</textarea>
         </cart-note>
       {%- endif -%}
@@ -43,12 +181,12 @@
             {%- when '@app' -%}
               {% render block %}
             {%- when 'subtotal' -%}
-              <div class="js-contents" {{ block.shopify_attributes }}>
-                <div>
+              <div class="js-contents" {{ block.shopify_attributes }} data-cart-totals>
+                <div data-cart-discounts>
                   {%- if cart.cart_level_discount_applications.size > 0 -%}
                     <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
                       {%- for discount in cart.cart_level_discount_applications -%}
-                        <li class="discounts__discount discounts__discount--position">
+                        <li class="discounts__discount discounts__discount--position" data-discount-item data-discount-id="{{ discount.id }}">
                           {{- 'icon-discount.svg' | inline_asset_content -}}
                           {{ discount.title | escape }}
                           (-{{ discount.total_allocated_amount | money }})
@@ -58,12 +196,12 @@
                   {%- endif -%}
                 </div>
 
-                <div class="totals">
-                  <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-                  <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+                <div class="totals" data-totals-summary>
+                  <h2 class="totals__total" data-totals-label>{{ 'sections.cart.estimated_total' | t }}</h2>
+                  <p class="totals__total-value" data-total-price>{{ cart.total_price | money_with_currency }}</p>
                 </div>
 
-                <small class="tax-note caption-large rte">
+                <small class="tax-note caption-large rte" data-tax-notice>
                   {%- if cart.duties_included and cart.taxes_included -%}
                     {%- if shop.shipping_policy.body == blank -%}
                       {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}
@@ -104,7 +242,7 @@
                 </small>
               </div>
             {%- else -%}
-              <div class="cart__ctas" {{ block.shopify_attributes }}>
+              <div class="cart__ctas" {{ block.shopify_attributes }} data-cart-buttons>
                 <button
                   type="submit"
                   id="checkout"
@@ -114,24 +252,149 @@
                     disabled
                   {% endif %}
                   form="cart"
+                  data-checkout-button
+                  data-cart-items="{{ cart.item_count }}"
+                  aria-label="Proceed to checkout"
                 >
                   {{ 'sections.cart.checkout' | t }}
                 </button>
               </div>
 
               {%- if additional_checkout_buttons -%}
-                <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                <div class="cart__dynamic-checkout-buttons additional-checkout-buttons" data-additional-checkout>
                   {{ content_for_additional_checkout_buttons }}
                 </div>
               {%- endif -%}
           {%- endcase -%}
         {% endfor %}
 
-        <div id="cart-errors"></div>
+        <div id="cart-errors" data-cart-errors></div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  class CartFooterUltraPro {
+    constructor() {
+      this.footer = document.querySelector('[data-cart-footer]');
+      this.config = {
+        sectionId: this.footer?.getAttribute('data-section-id'),
+        cartState: this.footer?.getAttribute('data-cart-state'),
+        cartItems: parseInt(this.footer?.getAttribute('data-cart-items') || '0')
+      };
+      if (!this.footer) return;
+      this.init();
+    }
+
+    init() {
+      this.trackPageView();
+      this.setupNoteInteractions();
+      this.setupCheckoutTracking();
+      this.setupDiscountTracking();
+      this.setupTotalTracking();
+      this.setupIntersectionObserver();
+    }
+
+    trackPageView() {
+      const totalPrice = document.querySelector('[data-total-price]')?.textContent || '0';
+      const discountCount = document.querySelectorAll('[data-discount-item]').length;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'cart_footer_view', {
+          cart_state: this.config.cartState,
+          item_count: this.config.cartItems,
+          discount_count: discountCount,
+          total_price: totalPrice,
+          section_id: this.config.sectionId,
+          page_location: window.location.href
+        });
+      }
+    }
+
+    setupNoteInteractions() {
+      const noteInput = document.querySelector('[data-note-input]');
+      if (!noteInput) return;
+      let noteLength = 0;
+      noteInput.addEventListener('focus', () => {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'cart_note_focus', { section_id: this.config.sectionId });
+        }
+      });
+      noteInput.addEventListener('blur', () => {
+        noteLength = noteInput.value.trim().length;
+        if (noteLength > 0 && typeof gtag !== 'undefined') {
+          gtag('event', 'cart_note_input', { note_length: noteLength, section_id: this.config.sectionId });
+        }
+      });
+    }
+
+    setupCheckoutTracking() {
+      const checkoutBtn = document.querySelector('[data-checkout-button]');
+      if (!checkoutBtn) return;
+      checkoutBtn.addEventListener('click', () => {
+        if (!checkoutBtn.disabled && typeof gtag !== 'undefined') {
+          gtag('event', 'cart_checkout_click', {
+            item_count: this.config.cartItems,
+            total_price: document.querySelector('[data-total-price]')?.textContent || '0',
+            section_id: this.config.sectionId,
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+    }
+
+    setupDiscountTracking() {
+      document.querySelectorAll('[data-discount-item]').forEach((item) => {
+        const discountId = item.getAttribute('data-discount-id');
+        item.addEventListener('mouseenter', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'cart_discount_visible', {
+              discount_id: discountId,
+              discount_text: item.textContent.trim(),
+              section_id: this.config.sectionId
+            });
+          }
+        });
+      });
+    }
+
+    setupTotalTracking() {
+      const totalEl = document.querySelector('[data-total-price]');
+      if (!totalEl) return;
+      const observer = new MutationObserver(() => {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'cart_total_updated', {
+            new_total: totalEl.textContent,
+            section_id: this.config.sectionId,
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+      observer.observe(totalEl, { childList: true, subtree: true, characterData: true });
+    }
+
+    setupIntersectionObserver() {
+      const sections = [
+        { selector: '[data-cart-note]', event: 'cart_note_visible' },
+        { selector: '[data-cart-totals]', event: 'cart_totals_visible' },
+        { selector: '[data-cart-buttons]', event: 'cart_buttons_visible' }
+      ];
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const section = sections.find(s => entry.target.matches(s.selector));
+            if (section && typeof gtag !== 'undefined') {
+              gtag('event', section.event, { section_id: this.config.sectionId });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      sections.forEach(s => { const el = document.querySelector(s.selector); if (el) observer.observe(el); });
+    }
+  }
+  window.addEventListener('load', () => { new CartFooterUltraPro(); });
+</script>
 
 {% schema %}
 {
