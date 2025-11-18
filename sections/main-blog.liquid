@@ -3,6 +3,15 @@
 {{ 'section-main-blog.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes heading-reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes card-appear { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes text-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pagination-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes button-scale { from { transform: scale(1); } to { transform: scale(1.02); } }
+  @keyframes button-glow { 0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); } 50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5); } }
+  @keyframes card-hover-lift { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -14,15 +23,119 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  [data-blog-page] {
+    animation: page-fade-in 0.6s ease-out;
+  }
+
+  [data-blog-title] {
+    animation: heading-reveal 0.7s ease-out 0.1s both;
+  }
+
+  [data-blog-grid] {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  [data-blog-card] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 1rem;
+    animation: card-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  [data-blog-card]:nth-child(1) { animation-delay: 0.15s; }
+  [data-blog-card]:nth-child(2) { animation-delay: 0.25s; }
+  [data-blog-card]:nth-child(3) { animation-delay: 0.35s; }
+  [data-blog-card]:nth-child(4) { animation-delay: 0.45s; }
+  [data-blog-card]:nth-child(5) { animation-delay: 0.55s; }
+  [data-blog-card]:nth-child(n+6) { animation-delay: 0.65s; }
+
+  [data-blog-card]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+    animation: card-hover-lift 0.3s ease-out;
+    transform: translateY(-4px);
+  }
+
+  [data-blog-card-image] {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  [data-blog-card]:hover [data-blog-card-image] {
+    transform: scale(1.03);
+  }
+
+  [data-blog-card-title] {
+    color: #333;
+    transition: color 0.3s ease;
+  }
+
+  [data-blog-card]:hover [data-blog-card-title] {
+    color: #667eea;
+  }
+
+  [data-blog-pagination] {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    animation: pagination-fade 0.7s ease-out 0.8s both;
+  }
+
+  [data-blog-pagination] a,
+  [data-blog-pagination] span {
+    padding: 0.625rem 0.875rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  [data-blog-pagination] a:hover {
+    animation: button-scale 0.3s ease-out;
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+  }
+
+  [data-blog-pagination] [aria-current="page"] {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+    border-color: rgba(102, 126, 234, 0.5);
+    font-weight: 600;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    [data-blog-card-title] {
+      color: #f5f5f5;
+    }
+    [data-blog-card]:hover [data-blog-card-title] {
+      color: #99b3ff;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 {%- endstyle -%}
 
 {%- paginate blog.articles by 6 -%}
-  <div class="main-blog page-width section-{{ section.id }}-padding">
-    <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+  <div class="main-blog page-width section-{{ section.id }}-padding" data-blog-page data-section-id="{{ section.id }}" data-blog-name="{{ blog.title | escape }}" role="main">
+    <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}" data-blog-title>
       {{ blog.title | escape }}
     </h1>
 
-    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}">
+    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}" data-blog-grid data-layout="{{ section.settings.layout }}">
       {%- for article in blog.articles -%}
         <div
           class="blog-articles__article article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
@@ -30,6 +143,12 @@
             data-cascade
             style="--animation-order: {{ forloop.index }};"
           {% endif %}
+          data-blog-card
+          data-article-id="{{ article.id }}"
+          data-article-index="{{ forloop.index }}"
+          data-article-url="{{ article.url }}"
+          data-article-title="{{ article.title | escape }}"
+          data-article-date="{{ article.published_at | date: '%Y-%m-%d' }}"
         >
           {%- render 'article-card',
             article: article,
@@ -45,10 +164,130 @@
     </div>
 
     {%- if paginate.pages > 1 -%}
-      {%- render 'pagination', paginate: paginate -%}
+      <nav data-blog-pagination role="navigation" aria-label="Pagination">
+        {%- render 'pagination', paginate: paginate -%}
+      </nav>
     {%- endif -%}
   </div>
 {%- endpaginate -%}
+
+<script>
+  class BlogPageUltraPro {
+    constructor() {
+      this.page = document.querySelector('[data-blog-page]');
+      this.config = {
+        sectionId: this.page?.getAttribute('data-section-id'),
+        blogName: this.page?.getAttribute('data-blog-name'),
+        layout: document.querySelector('[data-blog-grid]')?.getAttribute('data-layout') || 'grid'
+      };
+      if (!this.page) return;
+      this.init();
+    }
+
+    init() {
+      this.trackPageView();
+      this.setupCardInteractions();
+      this.setupIntersectionObserver();
+      this.setupPaginationTracking();
+    }
+
+    trackPageView() {
+      const articleCount = document.querySelectorAll('[data-blog-card]').length;
+      const paginationEl = document.querySelector('[data-blog-pagination]');
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'blog_page_view', {
+          blog_name: this.config.blogName,
+          article_count: articleCount,
+          layout: this.config.layout,
+          has_pagination: !!paginationEl,
+          section_id: this.config.sectionId,
+          page_location: window.location.href
+        });
+      }
+    }
+
+    setupCardInteractions() {
+      document.querySelectorAll('[data-blog-card]').forEach((card, index) => {
+        const articleId = card.getAttribute('data-article-id');
+        const articleTitle = card.getAttribute('data-article-title');
+        const articleUrl = card.getAttribute('data-article-url');
+        const articleIndex = index + 1;
+
+        card.addEventListener('mouseenter', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_card_hover', {
+              article_id: articleId,
+              article_title: articleTitle,
+              article_index: articleIndex,
+              blog_name: this.config.blogName
+            });
+          }
+        });
+
+        card.addEventListener('click', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_card_click', {
+              article_id: articleId,
+              article_title: articleTitle,
+              article_index: articleIndex,
+              article_url: articleUrl,
+              layout: this.config.layout,
+              blog_name: this.config.blogName
+            });
+          }
+        });
+      });
+    }
+
+    setupIntersectionObserver() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.target.hasAttribute('data-blog-card')) {
+            const articleId = entry.target.getAttribute('data-article-id');
+            const articleIndex = entry.target.getAttribute('data-article-index');
+            if (typeof gtag !== 'undefined') {
+              gtag('event', 'blog_card_visible', {
+                article_id: articleId,
+                article_index: parseInt(articleIndex),
+                blog_name: this.config.blogName,
+                section_id: this.config.sectionId
+              });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      document.querySelectorAll('[data-blog-card]').forEach(card => observer.observe(card));
+    }
+
+    setupPaginationTracking() {
+      const pagination = document.querySelector('[data-blog-pagination]');
+      if (!pagination) return;
+
+      const links = pagination.querySelectorAll('a');
+      links.forEach((link) => {
+        link.addEventListener('click', () => {
+          const href = link.getAttribute('href');
+          const pageMatch = href.match(/page=(\d+)/);
+          const pageNum = pageMatch ? parseInt(pageMatch[1]) : 1;
+
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_pagination_click', {
+              page_number: pageNum,
+              blog_name: this.config.blogName,
+              section_id: this.config.sectionId,
+              timestamp: new Date().toISOString()
+            });
+          }
+        });
+      });
+    }
+  }
+  window.addEventListener('load', () => {
+    new BlogPageUltraPro();
+  });
+</script>
 
 {% schema %}
 {
