@@ -1,7 +1,11 @@
 {%- style -%}
+  @keyframes content-reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
   .section-{{ section.id }}-padding {
     padding-top: calc({{ section.settings.padding_top }}px * 0.75);
     padding-bottom: calc({{ section.settings.padding_bottom }}px  * 0.75);
+    animation: content-reveal 0.6s cubic-bezier(.2,.8,.2,1) 0.1s both;
   }
 
   @media screen and (min-width: 750px) {
@@ -10,12 +14,95 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Ultra Pro Enhancement Layer */
+  .section-{{ section.id }}-padding {
+    background: linear-gradient(135deg, rgba(255,255,255,0), rgba(255,255,255,0.03));
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  .section-{{ section.id }}-padding:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  }
+
+  /* Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    .section-{{ section.id }}-padding {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .section-{{ section.id }}-padding:hover {
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    }
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    .section-{{ section.id }}-padding {
+      animation: none;
+      transition: none;
+    }
+  }
 {%- endstyle -%}
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <div class="section-{{ section.id }}-padding">
+  <div class="section-{{ section.id }}-padding" data-custom-liquid data-section-id="{{ section.id }}" role="region" aria-label="Custom content section">
     {{ section.settings.custom_liquid }}
   </div>
 </div>
+
+<script>
+  // Custom Liquid Ultra Pro: Analytics & Interactivity
+  (function () {
+    class CustomLiquidUltraPro {
+      constructor(el) {
+        this.el = el;
+        this.sectionId = el.getAttribute('data-section-id');
+        this.init();
+      }
+
+      init() {
+        this.trackViewability();
+        this.enhanceLinks();
+      }
+
+      trackViewability() {
+        if (!('IntersectionObserver' in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (window.gtag) gtag('event', 'custom_liquid_visible', { section_id: this.sectionId });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        observer.observe(this.el);
+      }
+
+      enhanceLinks() {
+        const links = this.el.querySelectorAll('a:not([data-enhanced])');
+        links.forEach((link) => {
+          link.setAttribute('data-enhanced', 'true');
+          link.style.transition = 'all 0.2s cubic-bezier(.2,.8,.2,1)';
+          link.addEventListener('mouseenter', () => {
+            link.style.opacity = '0.8';
+            link.style.transform = 'translateY(-1px)';
+          });
+          link.addEventListener('mouseleave', () => {
+            link.style.opacity = '1';
+            link.style.transform = 'translateY(0)';
+          });
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const customLiquidSections = document.querySelectorAll('[data-custom-liquid]');
+      customLiquidSections.forEach((el) => new CustomLiquidUltraPro(el));
+    });
+  })();
+</script>
 
 {% schema %}
 {
