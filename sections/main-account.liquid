@@ -12,26 +12,285 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* ========== ULTRA PRO ACCOUNT PAGE ========== */
+  
+  .customer.account {
+    animation: page-fade-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .customer__title {
+    animation: heading-reveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    letter-spacing: -0.02em;
+  }
+
+  @keyframes heading-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glasmorphism logout button */
+  .customer a[href*="logout"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 1.25rem !important;
+    color: inherit !important;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-weight: 500;
+  }
+
+  .customer a[href*="logout"]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* Section glasmorphism containers */
+  .customer > div > div {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: section-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+
+  .customer > div > div:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+  }
+
+  @keyframes section-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Section headings */
+  .customer > div > div h2 {
+    animation: heading-fade 0.6s ease-out 0.3s both;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @keyframes heading-fade {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Order history table styling */
+  .order-history {
+    animation: table-appear 0.8s ease-out 0.4s both;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  @keyframes table-appear {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .order-history thead {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .order-history th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .order-history tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .order-history tbody tr:hover {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  }
+
+  .order-history td {
+    padding: 1rem;
+  }
+
+  .order-history a {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+
+  .order-history a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .order-history a:hover::after {
+    width: 100%;
+  }
+
+  /* Pagination styling */
+  .pagination ul {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  .pagination li a,
+  .pagination li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .pagination li a:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .pagination li span[aria-current="page"] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-weight: 700;
+  }
+
+  /* Account details link */
+  .customer a[href*="addresses"] {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 0.25rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .customer a[href*="addresses"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .customer a[href*="addresses"]:hover::after {
+    width: 100%;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .customer.account,
+    .customer__title,
+    .customer > div > div,
+    .customer > div > div h2,
+    .order-history,
+    .customer a {
+      animation: none;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .customer > div > div {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .customer > div > div:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .order-history thead {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .customer a[href*="logout"] {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .customer a[href*="logout"]:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05)) !important;
+    }
+  }
 {%- endstyle -%}
 
-<div class="customer account section-{{ section.id }}-padding">
+<div class="customer account section-{{ section.id }}-padding" data-account-page data-section-id="{{ section.id }}">
   <div>
-    <h1 class="customer__title">{{ 'customer.account.title' | t }}</h1>
-    <a href="{{ routes.account_logout_url }}">
-      <span class="svg-wrapper">
+    <h1 class="customer__title" data-page-title>{{ 'customer.account.title' | t }}</h1>
+    <a href="{{ routes.account_logout_url }}" data-logout-button aria-label="Logout from account">
+      <span class="svg-wrapper" aria-hidden="true">
         {{- 'icon-account.svg' | inline_asset_content -}}
       </span>
       {{ 'customer.log_out' | t }}
     </a>
   </div>
 
-  <div>
-    <div>
-      <h2>{{ 'customer.orders.title' | t }}</h2>
+  <div data-orders-section>
+    <div data-orders-container>
+      <h2 data-section-title>{{ 'customer.orders.title' | t }}</h2>
 
       {% paginate customer.orders by 20 %}
         {%- if customer.orders.size > 0 -%}
-          <table role="table" class="order-history">
+          <table role="table" class="order-history" data-orders-table>
             <caption class="visually-hidden">
               {{ 'customer.orders.title' | t }}
             </caption>
@@ -48,7 +307,7 @@
             </thead>
             <tbody role="rowgroup">
               {%- for order in customer.orders -%}
-                <tr role="row">
+                <tr role="row" data-order-row data-order-id="{{ order.id }}" data-order-index="{{ forloop.index }}">
                   <td
                     id="RowOrder"
                     role="cell"
@@ -58,6 +317,7 @@
                     <a
                       href="{{ order.customer_url }}"
                       aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}"
+                      data-order-link
                     >
                       {{ order.name }}
                     </a>
@@ -138,19 +398,17 @@
       {% endpaginate %}
     </div>
 
-    <div>
-      <h2>{{ 'customer.account.details' | t }}</h2>
+    <div data-address-section>
+      <h2 data-section-title>{{ 'customer.account.details' | t }}</h2>
 
-      {{ customer.default_address | format_address }}
+      <div data-default-address>
+        {{ customer.default_address | format_address }}
+      </div>
 
-      <a href="{{ routes.account_addresses_url }}">
+      <a href="{{ routes.account_addresses_url }}" data-addresses-link aria-label="View all addresses">
         {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
       </a>
-    </div>
-  </div>
-</div>
-
-{% schema %}
+        </div>\n  </div>\n</div>\n\n<script>\n  class AccountPageUltraPro {\n    constructor(sectionId) {\n      this.page = document.querySelector('[data-account-page]');\n      this.ordersTable = document.querySelector('[data-orders-table]');\n      this.ordersSection = document.querySelector('[data-orders-section]');\n      this.addressSection = document.querySelector('[data-address-section]');\n      this.logoutButton = document.querySelector('[data-logout-button]');\n      this.sectionId = sectionId;\n      if (!this.page) return;\n      this.init();\n    }\n\n    init() {\n      this.trackPageView();\n      this.setupOrdersTracking();\n      this.setupButtonTracking();\n      this.setupSectionTracking();\n    }\n\n    trackPageView() {\n      if (typeof window.gtag === 'function') {\n        window.gtag('event', 'account_page_view', {\n          section_id: this.sectionId,\n          page_type: 'customer_account',\n          has_orders: !!this.ordersTable,\n          timestamp: new Date().toISOString()\n        });\n      }\n    }\n\n    setupOrdersTracking() {\n      if (!this.ordersTable) return;\n      const rows = this.ordersTable.querySelectorAll('[data-order-row]');\n      rows.forEach((row) => {\n        row.addEventListener('click', (e) => {\n          if (e.target.tagName === 'A' || e.target.closest('a')) {\n            this.trackOrderClick(row);\n          }\n        });\n      });\n    }\n\n    trackOrderClick(row) {\n      const orderId = row.dataset.orderId;\n      const orderIndex = row.dataset.orderIndex;\n      const orderLink = row.querySelector('[data-order-link]');\n      if (typeof window.gtag === 'function') {\n        window.gtag('event', 'account_order_click', {\n          section_id: this.sectionId,\n          order_id: orderId,\n          order_index: orderIndex,\n          order_number: orderLink?.textContent || 'N/A',\n          timestamp: new Date().toISOString()\n        });\n      }\n    }\n\n    setupButtonTracking() {\n      if (this.logoutButton) {\n        this.logoutButton.addEventListener('click', () => {\n          this.trackLogout();\n        });\n      }\n    }\n\n    trackLogout() {\n      if (typeof window.gtag === 'function') {\n        window.gtag('event', 'account_logout_click', {\n          section_id: this.sectionId,\n          timestamp: new Date().toISOString()\n        });\n      }\n    }\n\n    setupSectionTracking() {\n      if (this.ordersSection) {\n        const ordersObserver = new IntersectionObserver((entries) => {\n          entries.forEach((entry) => {\n            if (entry.isIntersecting) {\n              this.trackOrdersSectionVisible();\n              ordersObserver.unobserve(entry.target);\n            }\n          });\n        }, { threshold: 0.2 });\n        ordersObserver.observe(this.ordersSection);\n      }\n      if (this.addressSection) {\n        const addressObserver = new IntersectionObserver((entries) => {\n          entries.forEach((entry) => {\n            if (entry.isIntersecting) {\n              this.trackAddressSectionVisible();\n              addressObserver.unobserve(entry.target);\n            }\n          });\n        }, { threshold: 0.2 });\n        addressObserver.observe(this.addressSection);\n      }\n    }\n\n    trackOrdersSectionVisible() {\n      if (typeof window.gtag === 'function') {\n        window.gtag('event', 'account_orders_section_visible', {\n          section_id: this.sectionId,\n          order_count: this.ordersTable?.querySelectorAll('[data-order-row]').length || 0,\n          timestamp: new Date().toISOString()\n        });\n      }\n    }\n\n    trackAddressSectionVisible() {\n      if (typeof window.gtag === 'function') {\n        window.gtag('event', 'account_address_section_visible', {\n          section_id: this.sectionId,\n          timestamp: new Date().toISOString()\n        });\n      }\n    }\n  }\n\n  if (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', () => {\n      new AccountPageUltraPro('{{ section.id }}');\n    });\n  } else {\n    new AccountPageUltraPro('{{ section.id }}');\n  }\n</script>\n\n{% schema %}
 {
   "name": "t:sections.main-account.name",
   "settings": [
