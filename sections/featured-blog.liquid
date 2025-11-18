@@ -4,6 +4,10 @@
 {{ 'section-featured-blog.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
+  @keyframes blog-reveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes card-hover-lift { to { transform: translateY(-8px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); } }
+  @keyframes slider-fade { from { opacity: 0; } to { opacity: 1; } }
+
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -15,6 +19,93 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* Ultra Pro Blog Cards */
+  #Slider-{{ section.id }} .article {
+    animation: blog-reveal 0.6s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay: calc(var(--animation-order, 1) * 0.08s);
+  }
+
+  #Slider-{{ section.id }} .card {
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+    background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(255,255,255,0.3));
+    border: 1px solid rgba(var(--color-link-rgb,0,0),0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  #Slider-{{ section.id }} .card:hover {
+    animation: card-hover-lift 0.3s cubic-bezier(.2,.8,.2,1) forwards;
+    border-color: rgba(var(--color-link-rgb,0,0),0.15);
+  }
+
+  #Slider-{{ section.id }} .article-card__image {
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  #Slider-{{ section.id }} .card:hover .article-card__image {
+    transform: scale(1.04);
+  }
+
+  /* Slider Controls Enhancement */
+  .slider-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+    animation: slider-fade 0.6s ease-out 0.4s both;
+  }
+
+  .slider-button {
+    border-radius: 10px;
+    padding: 10px 16px;
+    border: 1px solid rgba(var(--color-link-rgb,0,0),0.2);
+    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));
+    transition: all 0.2s cubic-bezier(.2,.8,.2,1);
+    cursor: pointer;
+  }
+
+  .slider-button:hover {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    transform: scale(1.05);
+  }
+
+  .slider-counter {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  /* Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    #Slider-{{ section.id }} .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.12);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    #Slider-{{ section.id }} .card:hover {
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.25);
+    }
+    .slider-button {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.05));
+      border-color: rgba(var(--color-link-rgb,100,150,255),0.2);
+    }
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    #Slider-{{ section.id }} .article,
+    #Slider-{{ section.id }} .card,
+    .slider-buttons,
+    .slider-button {
+      animation: none;
+      transition: none;
+    }
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -24,7 +115,7 @@
     assign posts_displayed = section.settings.post_limit
   endif
 -%}
-<div class="blog color-{{ section.settings.color_scheme }} gradient{% if section.settings.heading == blank %} no-heading{% endif %}">
+<div class="blog color-{{ section.settings.color_scheme }} gradient{% if section.settings.heading == blank %} no-heading{% endif %}" data-featured-blog data-section-id="{{ section.id }}">
   <div class="page-width-desktop isolate{% if posts_displayed < 3 %} page-width-tablet{% endif %} section-{{ section.id }}-padding">
     {%- unless section.settings.heading == blank -%}
       <div class="title-wrapper-with-link{% if posts_displayed > 2 %} title-wrapper--self-padded-tablet-down{% else %} title-wrapper--self-padded-mobile{% endif %} title-wrapper--no-top-margin">
@@ -52,17 +143,20 @@
       </div>
     {%- endunless -%}
 
-    <slider-component class="slider-mobile-gutter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    <slider-component class="slider-mobile-gutter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-blog-slider>
       <ul
         id="Slider-{{ section.id }}"
         class="blog__posts articles-wrapper contains-card contains-card--article{% if settings.blog_card_style == 'standard' %} contains-card--standard{% endif %} grid grid--peek grid--2-col-tablet grid--{{ section.settings.columns_desktop }}-col-desktop slider {% if posts_displayed > 2 %}slider--tablet{% else %}slider--mobile{% endif %}"
         role="list"
+        data-slider-posts
       >
         {%- if section.settings.blog != blank and section.settings.blog.articles_count > 0 -%}
           {%- for article in section.settings.blog.articles limit: section.settings.post_limit -%}
             <li
               id="Slide-{{ section.id }}-{{ forloop.index }}"
               class="blog__post grid__item article slider__slide slider__slide--full-width{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+              data-slide-index="{{ forloop.index }}"
+              role="listitem"
               {% if settings.animations_reveal_on_scroll %}
                 data-cascade
                 style="--animation-order: {{ forloop.index }};"
@@ -189,6 +283,91 @@
     {%- endif -%}
   </div>
 </div>
+
+<script>
+  // Featured Blog Ultra Pro: slider tracking, analytics, interactivity
+  (function () {
+    class FeaturedBlogUltraPro {
+      constructor(el) {
+        this.el = el;
+        this.sectionId = el.getAttribute('data-section-id');
+        this.sliderContainer = el.querySelector('[data-blog-slider]');
+        this.postsList = el.querySelector('[data-slider-posts]');
+        this.slides = el.querySelectorAll('[data-slide-index]');
+        this.prevBtn = el.querySelector('.slider-button--prev');
+        this.nextBtn = el.querySelector('.slider-button--next');
+        this.currentSlide = 1;
+        this.init();
+      }
+
+      init() {
+        this.trackViewability();
+        this.setupSliderTracking();
+        this.enhanceLinks();
+      }
+
+      trackViewability() {
+        if (!('IntersectionObserver' in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (window.gtag) gtag('event', 'featured_blog_visible', { section_id: this.sectionId, post_count: this.slides.length });
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+        observer.observe(this.el);
+      }
+
+      setupSliderTracking() {
+        if (!this.prevBtn || !this.nextBtn) return;
+
+        this.prevBtn.addEventListener('click', () => {
+          this.trackSliderNavigation('prev');
+        });
+
+        this.nextBtn.addEventListener('click', () => {
+          this.trackSliderNavigation('next');
+        });
+      }
+
+      trackSliderNavigation(direction) {
+        if (window.gtag) {
+          const visibleSlides = Array.from(this.slides).filter((slide) => {
+            const rect = slide.getBoundingClientRect();
+            return rect.left >= 0 && rect.right <= window.innerWidth;
+          });
+          gtag('event', 'featured_blog_slider_navigation', {
+            section_id: this.sectionId,
+            direction: direction,
+            visible_slides: visibleSlides.length,
+            total_slides: this.slides.length
+          });
+        }
+      }
+
+      enhanceLinks() {
+        const links = this.el.querySelectorAll('a[href*="/blogs/"]');
+        links.forEach((link) => {
+          link.addEventListener('click', () => {
+            const articleTitle = link.closest('[data-slide-index]')?.querySelector('h3')?.textContent || 'Unknown';
+            if (window.gtag) {
+              gtag('event', 'featured_blog_article_click', {
+                section_id: this.sectionId,
+                article_title: articleTitle
+              });
+            }
+          });
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const blogSections = document.querySelectorAll('[data-featured-blog]');
+      blogSections.forEach((el) => new FeaturedBlogUltraPro(el));
+    });
+  })();
+</script>
 
 {% schema %}
 {
