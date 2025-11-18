@@ -67,11 +67,31 @@
     }
   }
 
-  /* Enhanced button hover states */
+  /* Glassmorphism box container */
+  #Banner-{{ section.id }} .banner__box {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #Banner-{{ section.id }} .banner__box:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-4px);
+  }
+
+  /* Enhanced button hover states with glassmorphism */
   #Banner-{{ section.id }} .banner__buttons .button {
     position: relative;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   }
 
   #Banner-{{ section.id }} .banner__buttons .button::before {
@@ -90,8 +110,9 @@
   }
 
   #Banner-{{ section.id }} .banner__buttons .button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15)) !important;
   }
 
   /* Text shadow for better contrast */
@@ -128,10 +149,58 @@
     }
   }
 
+  /* Button scale animation */
+  @keyframes button-scale {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Glassmorphism glow effect on button click */
+  @keyframes button-glow {
+    0% {
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    100% {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    }
+  }
+
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
     #Banner-{{ section.id }} .banner__heading {
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+    
+    #Banner-{{ section.id }} .banner__box {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #Banner-{{ section.id }} .banner__box:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    #Banner-{{ section.id }} .banner__buttons .button {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    #Banner-{{ section.id }} .banner__buttons .button:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)) !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
     }
   }
 </style>
@@ -192,6 +261,10 @@
   class="banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %} banner--parallax banner--gradient-overlay{% if section.settings.blur_effect != blank %} banner--blur-{{ section.settings.blur_effect }}{% endif %}"
   role="img"
   aria-label="{% if section.settings.image.alt %}{{ section.settings.image.alt }}{% else %}{{ section.settings.image_2.alt | default: 'Banner' }}{% endif %}"
+  data-banner
+  data-section-id="{{ section.id }}"
+  data-image-behavior="{{ section.settings.image_behavior }}"
+  data-blur-effect="{{ section.settings.blur_effect }}"
 >
   {%- if section.settings.image != blank -%}
     <div class="banner__media media{% if section.settings.image == blank and section.settings.image_2 == blank %} placeholder{% endif %}{% if section.settings.image_2 != blank %} banner__media-half{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
@@ -285,6 +358,10 @@
                     href="{{ block.settings.button_link_1 }}"
                   {% endif %}
                   class="button{% if block.settings.button_style_secondary_1 %} button--secondary{% else %} button--primary{% endif %}"
+                  data-button-type="primary"
+                  data-button-label="{{ block.settings.button_label_1 | escape }}"
+                  data-button-link="{{ block.settings.button_link_1 }}"
+                  aria-label="{{ block.settings.button_label_1 | escape }}"
                 >
                   {{- block.settings.button_label_1 | escape -}}
                 </a>
@@ -297,6 +374,10 @@
                     href="{{ block.settings.button_link_2 }}"
                   {% endif %}
                   class="button{% if block.settings.button_style_secondary_2 %} button--secondary{% else %} button--primary{% endif %}"
+                  data-button-type="secondary"
+                  data-button-label="{{ block.settings.button_label_2 | escape }}"
+                  data-button-link="{{ block.settings.button_link_2 }}"
+                  aria-label="{{ block.settings.button_label_2 | escape }}"
                 >
                   {{- block.settings.button_label_2 | escape -}}
                 </a>
@@ -309,112 +390,148 @@
 </div>
 
 <script>
-  // ========== ULTRA PRO PARALLAX & INTERACTIONS ==========
-  (function() {
-    const banner = document.getElementById('Banner-{{ section.id }}');
-    if (!banner) return;
-
-    const mediaElement = banner.querySelector('.banner__media');
-    if (!mediaElement) return;
-
-    // Parallax effect on scroll
-    let ticking = false;
-    const parallaxEffect = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollTop = window.scrollY || window.pageYOffset;
-          const elementTop = banner.getBoundingClientRect().top;
-          const elementHeight = banner.offsetHeight;
-          const windowHeight = window.innerHeight;
-
-          if (elementTop < windowHeight && elementTop + elementHeight > 0) {
-            const offset = (scrollTop - (banner.offsetTop - windowHeight)) * 0.5;
-            mediaElement.style.transform = `translateY(${offset}px)`;
-          }
-        });
-        ticking = true;
-        setTimeout(() => { ticking = false; }, 16);
-      }
-    };
-
-    // Touch gesture detection
-    let touchStartY = 0;
-    mediaElement.addEventListener('touchstart', (e) => {
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    mediaElement.addEventListener('touchmove', (e) => {
-      const touchCurrentY = e.touches[0].clientY;
-      const diff = touchStartY - touchCurrentY;
+  // ========== ULTRA PRO PARALLAX & ANALYTICS ==========
+  class ImageBannerUltraPro {
+    constructor(sectionId) {
+      this.banner = document.getElementById(`Banner-${sectionId}`);
+      this.sectionId = sectionId;
       
-      if (Math.abs(diff) > 10) {
-        mediaElement.style.filter = `blur(${Math.min(diff / 20, 2)}px)`;
-      }
-    }, { passive: true });
+      if (!this.banner) return;
 
-    mediaElement.addEventListener('touchend', () => {
-      mediaElement.style.filter = 'blur(0px)';
-    });
+      this.mediaElement = this.banner.querySelector('.banner__media');
+      this.contentElement = this.banner.querySelector('.banner__content');
+      this.buttons = this.banner.querySelectorAll('.banner__buttons .button');
+      this.isVisible = false;
+      this.parallaxTicking = false;
 
-    // Intersection observer for animation trigger
-    const observerOptions = {
-      threshold: 0.3,
-      rootMargin: '0px 0px -50px 0px'
-    };
+      this.init();
+    }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-          window.addEventListener('scroll', parallaxEffect, { passive: true });
-        }
-      });
-    }, observerOptions);
+    init() {
+      this.setupIntersectionObserver();
+      this.setupParallaxEffect();
+      this.setupTouchGestures();
+      this.setupButtonTracking();
+    }
 
-    observer.observe(banner);
-
-    // Viewport-based animation
-    if ('IntersectionObserver' in window) {
-      const contentElement = banner.querySelector('.banner__content');
-      if (contentElement) {
-        const contentObserver = new IntersectionObserver((entries) => {
+    setupIntersectionObserver() {
+      const observer = new IntersectionObserver(
+        (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
+            if (entry.isIntersecting && !this.isVisible) {
+              this.isVisible = true;
+              this.trackBannerVisible();
+              this.banner.classList.add('animate-in');
             }
           });
-        }, { threshold: 0.1 });
+        },
+        { threshold: 0.3, rootMargin: '0px 0px -50px 0px' }
+      );
 
-        contentObserver.observe(contentElement);
+      observer.observe(this.banner);
+    }
+
+    setupParallaxEffect() {
+      if (!this.mediaElement) return;
+
+      window.addEventListener('scroll', () => {
+        if (!this.parallaxTicking) {
+          requestAnimationFrame(() => {
+            const scrollTop = window.scrollY || window.pageYOffset;
+            const elementTop = this.banner.getBoundingClientRect().top;
+            const elementHeight = this.banner.offsetHeight;
+            const windowHeight = window.innerHeight;
+
+            if (elementTop < windowHeight && elementTop + elementHeight > 0) {
+              const offset = (scrollTop - (this.banner.offsetTop - windowHeight)) * 0.5;
+              this.mediaElement.style.transform = `translateY(${offset}px)`;
+            }
+          });
+          this.parallaxTicking = true;
+          setTimeout(() => { this.parallaxTicking = false; }, 16);
+        }
+      }, { passive: true });
+    }
+
+    setupTouchGestures() {
+      if (!this.mediaElement) return;
+
+      let touchStartY = 0;
+      this.mediaElement.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      this.mediaElement.addEventListener('touchmove', (e) => {
+        const touchCurrentY = e.touches[0].clientY;
+        const diff = touchStartY - touchCurrentY;
+        
+        if (Math.abs(diff) > 10) {
+          this.mediaElement.style.filter = `blur(${Math.min(diff / 20, 2)}px)`;
+        }
+      }, { passive: true });
+
+      this.mediaElement.addEventListener('touchend', () => {
+        this.mediaElement.style.filter = 'blur(0px)';
+      });
+    }
+
+    setupButtonTracking() {
+      this.buttons.forEach((button, index) => {
+        button.addEventListener('click', (e) => {
+          this.trackButtonClick(button, index);
+          this.createRippleEffect(button, e);
+        });
+      });
+    }
+
+    trackBannerVisible() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'banner_visible', {
+          section_id: this.sectionId,
+          image_behavior: this.banner.dataset.imageBehavior,
+          blur_effect: this.banner.dataset.blurEffect,
+          timestamp: new Date().toISOString()
+        });
       }
     }
 
-    // Button ripple effect
-    const buttons = banner.querySelectorAll('.banner__buttons .button');
-    buttons.forEach((button) => {
-      button.addEventListener('click', (e) => {
-        const ripple = document.createElement('span');
-        ripple.style.position = 'absolute';
-        ripple.style.width = '20px';
-        ripple.style.height = '20px';
-        ripple.style.background = 'radial-gradient(circle, rgba(255,255,255,0.5), transparent)';
-        ripple.style.borderRadius = '50%';
-        ripple.style.pointerEvents = 'none';
-        ripple.style.animation = 'ripple 0.6s ease-out';
-        ripple.style.left = (e.clientX - button.getBoundingClientRect().left) + 'px';
-        ripple.style.top = (e.clientY - button.getBoundingClientRect().top) + 'px';
-        button.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-      });
-    });
+    trackButtonClick(button, index) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'banner_button_click', {
+          section_id: this.sectionId,
+          button_index: index,
+          button_label: button.dataset.buttonLabel,
+          button_type: button.dataset.buttonType,
+          button_link: button.dataset.buttonLink,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
 
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', parallaxEffect);
-      observer.disconnect();
-    };
-  })();
+    createRippleEffect(button, e) {
+      const ripple = document.createElement('span');
+      ripple.style.position = 'absolute';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      ripple.style.background = 'radial-gradient(circle, rgba(255,255,255,0.5), transparent)';
+      ripple.style.borderRadius = '50%';
+      ripple.style.pointerEvents = 'none';
+      ripple.style.animation = 'ripple 0.6s ease-out';
+      ripple.style.left = (e.clientX - button.getBoundingClientRect().left) + 'px';
+      ripple.style.top = (e.clientY - button.getBoundingClientRect().top) + 'px';
+      button.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ImageBannerUltraPro('{{ section.id }}');
+    });
+  } else {
+    new ImageBannerUltraPro('{{ section.id }}');
+  }
 </script>
 
 <style>
