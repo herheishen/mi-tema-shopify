@@ -1,6 +1,41 @@
 {{ 'section-blog-post.css' | asset_url | stylesheet_tag }}
 
-<article class="article-template">
+{%- style -%}
+  @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes image-reveal { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes heading-reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes content-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes comment-card-appear { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes form-slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes button-scale { from { transform: scale(1); } to { transform: scale(1.02); } }
+  @keyframes button-glow { 0%, 100% { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); } 50% { box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5); } }
+  @keyframes text-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes button-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  [data-article-page] { animation: page-fade-in 0.6s ease-out; }
+  [data-article-hero] { animation: image-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  [data-article-title] { animation: heading-reveal 0.7s ease-out 0.2s both; }
+  [data-article-meta] { animation: text-fade-in 0.7s ease-out 0.3s both; }
+  [data-article-content] { animation: content-fade-in 0.8s ease-out 0.4s both; }
+  [data-article-share] { animation: text-fade-in 0.7s ease-out 0.5s both; }
+  [data-article-back] { animation: text-fade-in 0.6s ease-out 0.6s both; }
+  [data-comments-section] { background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%); backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  [data-comments-container] { animation: form-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both; }
+  [data-comment-item] { background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; animation: comment-card-appear 0.6s ease-out forwards; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  [data-comment-item]:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%); box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1); transform: translateY(-2px); }
+  [data-comment-item]:nth-child(1) { animation-delay: 0s; } [data-comment-item]:nth-child(2) { animation-delay: 0.1s; } [data-comment-item]:nth-child(3) { animation-delay: 0.2s; } [data-comment-item]:nth-child(n+4) { animation-delay: 0.3s; }
+  [data-comment-form] { background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 2rem; animation: form-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s both; transition: all 0.3s ease; }
+  [data-comment-form]:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%); box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15); }
+  [data-comment-field] input, [data-comment-field] textarea { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #333; transition: all 0.3s ease; padding: 0.875rem; }
+  [data-comment-field] input:focus, [data-comment-field] textarea:focus { outline: none; background: rgba(255, 255, 255, 0.2); border-color: rgba(102, 126, 234, 0.5); box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); transform: translateY(-2px); }
+  [data-comment-submit] { background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%); border: 1px solid rgba(102, 126, 234, 0.4); border-radius: 8px; color: #333; padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 500; transition: all 0.3s ease; animation: button-fade-in 0.7s ease-out 0.9s both; }
+  [data-comment-submit]:hover { animation: button-scale 0.3s ease-out; background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transform: translateY(-2px); }
+  [data-comment-submit]:active { transform: translateY(0); }
+  [data-article-back] a { transition: all 0.3s ease; } [data-article-back] a:hover { transform: translateX(-4px); }
+  @media (prefers-color-scheme: dark) { [data-comment-field] input, [data-comment-field] textarea { color: #f5f5f5; background: rgba(255, 255, 255, 0.08); } [data-comment-submit] { color: #f5f5f5; } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+{%- endstyle -%}
+
+<article class="article-template" data-article-page data-section-id="{{ section.id }}" data-article-id="{{ article.id }}" role="main">
   {%- for block in section.blocks -%}
     {%- case block.type -%}
       {%- when '@app' -%}
@@ -12,6 +47,7 @@
           <div
             class="article-template__hero-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             {{ block.shopify_attributes }}
+            data-article-hero
           >
             <div
               class="article-template__hero-{{ block.settings.image_height }} media"
@@ -48,25 +84,29 @@
         >
           <h1
             class="article-template__title"
+            data-article-title
           >
             {{ article.title | escape }}
           </h1>
-          {%- if block.settings.blog_show_date -%}
-            <span class="circle-divider caption-with-letter-spacing">
-              {{- article.published_at | time_tag: format: 'date' -}}
-            </span>
-          {%- endif -%}
-          {%- if block.settings.blog_show_author -%}
-            <span class="caption-with-letter-spacing">
-              <span>{{ article.author }}</span>
-            </span>
-          {%- endif -%}
+          <div data-article-meta>
+            {%- if block.settings.blog_show_date -%}
+              <span class="circle-divider caption-with-letter-spacing">
+                {{- article.published_at | time_tag: format: 'date' -}}
+              </span>
+            {%- endif -%}
+            {%- if block.settings.blog_show_author -%}
+              <span class="caption-with-letter-spacing">
+                <span>{{ article.author }}</span>
+              </span>
+            {%- endif -%}
+          </div>
         </header>
 
       {%- when 'content' -%}
         <div
           class="article-template__content page-width page-width--narrow rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {{ block.shopify_attributes }}
+          data-article-content
         >
           {{ article.content }}
         </div>
@@ -75,6 +115,7 @@
         <div
           class="article-template__social-sharing page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {{ block.shopify_attributes }}
+          data-article-share
         >
           {% assign share_url = request.origin | append: article.url %}
           {% render 'share-button', block: block, share_link: share_url %}
@@ -82,8 +123,8 @@
     {%- endcase -%}
   {%- endfor -%}
 
-  <div class="article-template__back element-margin-top center{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
-    <a href="{{ blog.url }}" class="article-template__link link animate-arrow">
+  <div class="article-template__back element-margin-top center{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" data-article-back>
+    <a href="{{ blog.url }}" class="article-template__link link animate-arrow" data-back-link>
       <span class="icon-wrap">
         <span class="svg-wrapper">
           {{- 'icon-arrow.svg' | inline_asset_content -}}
@@ -93,10 +134,11 @@
     </a>
   </div>
   {%- if blog.comments_enabled? -%}
-    <div class="article-template__comment-wrapper background-secondary">
+    <div class="article-template__comment-wrapper background-secondary" data-comments-section>
       <div
         id="comments"
         class="page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+        data-comments-container
       >
         {%- if article.comments_count > 0 -%}
           {%- assign anchor_id = '#Comments-' | append: article.id -%}
@@ -107,7 +149,7 @@
           {% paginate article.comments by 5 %}
             <div class="article-template__comments">
               {%- if comment.status == 'pending' and comment.content -%}
-                <article id="{{ comment.id }}" class="article-template__comments-comment">
+                <article id="{{ comment.id }}" class="article-template__comments-comment" data-comment-item data-comment-status="pending">
                   {{ comment.content }}
                   <footer class="right">
                     <span class="circle-divider caption-with-letter-spacing">{{ comment.author }}</span>
@@ -116,7 +158,7 @@
               {%- endif -%}
 
               {%- for comment in article.comments -%}
-                <article id="{{ comment.id }}" class="article-template__comments-comment">
+                <article id="{{ comment.id }}" class="article-template__comments-comment" data-comment-item data-comment-index="{{ forloop.index }}">
                   {{ comment.content }}
                   <footer class="right">
                     <span class="circle-divider caption-with-letter-spacing">{{ comment.author }}</span
@@ -137,7 +179,8 @@
               assign post_message = 'blogs.article.success_moderated'
             endif
           -%}
-          <h2>{{ 'blogs.article.comment_form_title' | t }}</h2>
+          <div data-comment-form>
+            <h2>{{ 'blogs.article.comment_form_title' | t }}</h2>
           {%- if form.errors -%}
             <div class="form__message" role="alert">
               <h3 class="form-status caption-large text-body" tabindex="-1" autofocus>
@@ -281,12 +324,94 @@
           {%- if blog.moderated? -%}
             <p class="article-template__comment-warning caption">{{ 'blogs.article.moderated' | t }}</p>
           {%- endif -%}
-          <input type="submit" class="button" value="{{ 'blogs.article.post' | t }}">
+          <input type="submit" class="button" value="{{ 'blogs.article.post' | t }}" data-comment-submit>
+          </div>
         {% endform %}
       </div>
     </div>
   {%- endif -%}
 </article>
+
+<script>
+  class ArticlePageUltraPro {
+    constructor() {
+      this.page = document.querySelector('[data-article-page]');
+      this.article = { id: this.page?.getAttribute('data-article-id'), sectionId: this.page?.getAttribute('data-section-id') };
+      if (!this.page) return; this.init();
+    }
+    init() { this.trackPageView(); this.setupIntersectionObserver(); this.setupCommentInteractions(); this.setupFormInteractions(); this.setupEngagementTracking(); }
+    trackPageView() {
+      const titleEl = document.querySelector('[data-article-title]');
+      const contentEl = document.querySelector('[data-article-content]');
+      const commentsCount = document.querySelectorAll('[data-comment-item]').length;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'article_page_view', { article_id: this.article.id, article_title: titleEl?.textContent || 'Unknown', content_length: contentEl?.innerText?.length || 0, comments_count: commentsCount, section_id: this.article.sectionId, page_location: window.location.href });
+      }
+    }
+    setupIntersectionObserver() {
+      const sections = [
+        { selector: '[data-article-hero]', event: 'article_hero_visible' },
+        { selector: '[data-article-content]', event: 'article_content_visible' },
+        { selector: '[data-comments-container]', event: 'article_comments_visible' },
+        { selector: '[data-comment-form]', event: 'article_comment_form_visible' }
+      ];
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const section = sections.find(s => entry.target.matches(s.selector));
+            if (section && typeof gtag !== 'undefined') {
+              gtag('event', section.event, { article_id: this.article.id, visibility_time: new Date().toISOString(), section_id: this.article.sectionId });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      sections.forEach(section => { const el = document.querySelector(section.selector); if (el) observer.observe(el); });
+    }
+    setupCommentInteractions() {
+      document.querySelectorAll('[data-comment-item]').forEach((item, index) => {
+        const commentId = item.getAttribute('data-comment-id');
+        const commentStatus = item.getAttribute('data-comment-status');
+        item.addEventListener('mouseenter', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'article_comment_hover', { article_id: this.article.id, comment_id: commentId, comment_index: index + 1, comment_status: commentStatus || 'approved' });
+          }
+        });
+      });
+    }
+    setupFormInteractions() {
+      const form = document.querySelector('[data-comment-form]');
+      if (!form) return;
+      const inputs = form.querySelectorAll('input, textarea');
+      const submitBtn = form.querySelector('[data-comment-submit]');
+      inputs.forEach((input) => {
+        input.addEventListener('focus', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'article_comment_form_focus', { field_name: input.name, article_id: this.article.id });
+          }
+        });
+      });
+      if (submitBtn) {
+        submitBtn.addEventListener('click', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'article_comment_submit_click', { article_id: this.article.id, timestamp: new Date().toISOString(), section_id: this.article.sectionId });
+          }
+        });
+      }
+    }
+    setupEngagementTracking() {
+      const backLink = document.querySelector('[data-back-link]');
+      if (backLink) {
+        backLink.addEventListener('click', () => {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'article_back_to_blog_click', { article_id: this.article.id, blog_url: backLink.href });
+          }
+        });
+      }
+    }
+  }
+  window.addEventListener('load', () => { new ArticlePageUltraPro(); });
+</script>
 
 <script type="application/ld+json">
   {{ article | structured_data }}
@@ -372,3 +497,85 @@
   ]
 }
 {% endschema %}
+
+<script>
+  class ArticlePageUltraPro {
+    constructor() {
+      this.page = document.querySelector('[data-article-page]');
+      this.article = { id: this.page?.getAttribute('data-article-id'), sectionId: this.page?.getAttribute('data-section-id') };
+      if (!this.page) return; this.init();
+    }
+    init() { this.trackPageView(); this.setupIntersectionObserver(); this.setupCommentInteractions(); this.setupFormInteractions(); this.setupEngagementTracking(); }
+    trackPageView() {
+      const titleEl = document.querySelector('[data-article-title]');
+      const contentEl = document.querySelector('[data-article-content]');
+      const commentsCount = document.querySelectorAll('[data-comment-item]').length;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'article_page_view', { article_id: this.article.id, article_title: titleEl?.textContent || 'Unknown', content_length: contentEl?.innerText?.length || 0, comments_count: commentsCount, section_id: this.article.sectionId });
+      }
+    }
+    setupIntersectionObserver() {
+      const sections = [ { selector: '[data-article-hero]', event: 'article_hero_visible' }, { selector: '[data-article-content]', event: 'article_content_visible' }, { selector: '[data-comments-container]', event: 'article_comments_visible' }, { selector: '[data-comment-form]', event: 'article_comment_form_visible' } ];
+      const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { const section = sections.find(s => entry.target.matches(s.selector)); if (section && typeof gtag !== 'undefined') { gtag('event', section.event, { article_id: this.article.id, section_id: this.article.sectionId }); } observer.unobserve(entry.target); } }); }, { threshold: 0.2 });
+      sections.forEach(section => { const el = document.querySelector(section.selector); if (el) observer.observe(el); });
+    }
+    setupCommentInteractions() { document.querySelectorAll('[data-comment-item]').forEach((item, index) => { item.addEventListener('mouseenter', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_hover', { article_id: this.article.id, comment_index: index + 1 }); } }); }); }
+    setupFormInteractions() {
+      const form = document.querySelector('[data-comment-form]');
+      if (!form) return;
+      const inputs = form.querySelectorAll('input, textarea');
+      const submitBtn = form.querySelector('[data-comment-submit]');
+      inputs.forEach((input) => {
+        input.addEventListener('focus', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_form_focus', { field_name: input.name, article_id: this.article.id }); } });
+      });
+      if (submitBtn) { submitBtn.addEventListener('click', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_submit_click', { article_id: this.article.id }); } }); }
+    }
+    setupEngagementTracking() {
+      const backLink = document.querySelector('[data-back-link]');
+      if (backLink) { backLink.addEventListener('click', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_back_to_blog_click', { article_id: this.article.id }); } }); }
+    }
+  }
+  window.addEventListener('load', () => { new ArticlePageUltraPro(); });
+</script>
+
+
+<script>
+  class ArticlePageUltraPro {
+    constructor() {
+      this.page = document.querySelector('[data-article-page]');
+      this.article = { id: this.page?.getAttribute('data-article-id'), sectionId: this.page?.getAttribute('data-section-id') };
+      if (!this.page) return; this.init();
+    }
+    init() { this.trackPageView(); this.setupIntersectionObserver(); this.setupCommentInteractions(); this.setupFormInteractions(); this.setupEngagementTracking(); }
+    trackPageView() {
+      const titleEl = document.querySelector('[data-article-title]');
+      const contentEl = document.querySelector('[data-article-content]');
+      const commentsCount = document.querySelectorAll('[data-comment-item]').length;
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'article_page_view', { article_id: this.article.id, article_title: titleEl?.textContent || 'Unknown', content_length: contentEl?.innerText?.length || 0, comments_count: commentsCount, section_id: this.article.sectionId });
+      }
+    }
+    setupIntersectionObserver() {
+      const sections = [ { selector: '[data-article-hero]', event: 'article_hero_visible' }, { selector: '[data-article-content]', event: 'article_content_visible' }, { selector: '[data-comments-container]', event: 'article_comments_visible' }, { selector: '[data-comment-form]', event: 'article_comment_form_visible' } ];
+      const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { const section = sections.find(s => entry.target.matches(s.selector)); if (section && typeof gtag !== 'undefined') { gtag('event', section.event, { article_id: this.article.id, section_id: this.article.sectionId }); } observer.unobserve(entry.target); } }); }, { threshold: 0.2 });
+      sections.forEach(section => { const el = document.querySelector(section.selector); if (el) observer.observe(el); });
+    }
+    setupCommentInteractions() { document.querySelectorAll('[data-comment-item]').forEach((item, index) => { item.addEventListener('mouseenter', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_hover', { article_id: this.article.id, comment_index: index + 1 }); } }); }); }
+    setupFormInteractions() {
+      const form = document.querySelector('[data-comment-form]');
+      if (!form) return;
+      const inputs = form.querySelectorAll('input, textarea');
+      const submitBtn = form.querySelector('[data-comment-submit]');
+      inputs.forEach((input) => {
+        input.addEventListener('focus', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_form_focus', { field_name: input.name, article_id: this.article.id }); } });
+      });
+      if (submitBtn) { submitBtn.addEventListener('click', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_comment_submit_click', { article_id: this.article.id }); } }); }
+    }
+    setupEngagementTracking() {
+      const backLink = document.querySelector('[data-back-link]');
+      if (backLink) { backLink.addEventListener('click', () => { if (typeof gtag !== 'undefined') { gtag('event', 'article_back_to_blog_click', { article_id: this.article.id }); } }); }
+    }
+  }
+  window.addEventListener('load', () => { new ArticlePageUltraPro(); });
+</script>
+
