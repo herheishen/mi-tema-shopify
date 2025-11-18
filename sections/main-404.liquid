@@ -1,4 +1,17 @@
 <style type="text/css">
+  /* ========== ULTRA PRO 404 ERROR PAGE ========== */
+  
+  .template-404 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 70vh;
+    position: relative;
+    overflow: hidden;
+    animation: page-fade-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
   .template-404 .title + * {
     margin-top: 1rem;
   }
@@ -8,16 +21,339 @@
       margin-top: 2rem;
     }
   }
+
+  /* Glasmorphism container */
+  .template-404-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 600px;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .template-404-container {
+      padding: 4rem 3rem;
+    }
+  }
+
+  .template-404-container:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: translateY(-4px);
+  }
+
+  /* 404 Number animation */
+  .template-404 .error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: error-code-float 3s ease-in-out infinite;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+  }
+
+  @keyframes error-code-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Animated background particles */
+  .template-404::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+    animation: particles-shift 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes particles-shift {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(20px, -20px);
+    }
+    50% {
+      transform: translate(-10px, 20px);
+    }
+    75% {
+      transform: translate(30px, 10px);
+    }
+  }
+
+  /* Title animation */
+  .template-404 .title {
+    animation: title-slide-down 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes title-slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Subtext animation */
+  .template-404 .subtext {
+    animation: text-fade-in 0.8s ease-out 0.2s both;
+    opacity: 0.8;
+  }
+
+  @keyframes text-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Button glasmorphism with hover */
+  .template-404 .button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: button-pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+    margin-top: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .template-404 .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.4s ease;
+  }
+
+  .template-404 .button:hover::before {
+    left: 100%;
+  }
+
+  .template-404 .button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15)) !important;
+  }
+
+  .template-404 .button:active {
+    transform: translateY(-1px) scale(0.98);
+  }
+
+  @keyframes button-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .template-404,
+    .template-404 .error-code,
+    .template-404 .title,
+    .template-404 .subtext,
+    .template-404 .button,
+    .template-404-container {
+      animation: none;
+    }
+    
+    .template-404::before {
+      animation: none;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .template-404-container {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .template-404-container:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .template-404 .title {
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .template-404 .button {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .template-404 .button:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)) !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+  }
 </style>
 
-<div class="template-404 page-width page-margin center">
-  <p>
-    {{ 'templates.404.subtext' | t }}
-  </p>
-  <h1 class="title">
-    {{ 'templates.404.title' | t }}
-  </h1>
-  <a href="{{ routes.all_products_collection_url }}" class="button">
-    {{ 'general.continue_shopping' | t }}
-  </a>
+<div class="template-404 page-width page-margin center" data-error-page data-section-id="404">
+  <div class="template-404-container" data-container>
+    <p class="error-code" data-error-code aria-label="Error 404 Not Found">404</p>
+    <p class="subtext" data-subtext>
+      {{ 'templates.404.subtext' | t }}
+    </p>
+    <h1 class="title" data-title>
+      {{ 'templates.404.title' | t }}
+    </h1>
+    <a 
+      href="{{ routes.all_products_collection_url }}" 
+      class="button"
+      data-cta-button
+      data-button-label="Continue Shopping"
+      aria-label="Continue shopping"
+    >
+      {{ 'general.continue_shopping' | t }}
+    </a>
+  </div>
 </div>
+
+<script>
+  // ========== ULTRA PRO 404 ERROR PAGE TRACKING ==========
+  class ErrorPageUltraPro {
+    constructor() {
+      this.errorPage = document.querySelector('[data-error-page]');
+      this.button = document.querySelector('[data-cta-button]');
+      this.errorCode = document.querySelector('[data-error-code]');
+      this.container = document.querySelector('[data-container]');
+      
+      if (!this.errorPage) return;
+
+      this.init();
+    }
+
+    init() {
+      this.trackPageView();
+      this.setupButtonTracking();
+      this.setupInteractionTracking();
+      this.setupPerformanceMonitoring();
+    }
+
+    trackPageView() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'error_404_page_view', {
+          page_title: document.title,
+          page_url: window.location.href,
+          referrer: document.referrer,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupButtonTracking() {
+      if (!this.button) return;
+
+      this.button.addEventListener('click', (e) => {
+        this.trackButtonClick();
+      });
+
+      this.button.addEventListener('mouseenter', () => {
+        this.trackButtonEngagement('hover');
+      });
+    }
+
+    trackButtonClick() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'error_404_button_click', {
+          button_label: this.button.dataset.buttonLabel,
+          button_url: this.button.href,
+          interaction_time: Date.now(),
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    trackButtonEngagement(type) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'error_404_engagement', {
+          engagement_type: type,
+          element: 'cta_button',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupInteractionTracking() {
+      this.container.addEventListener('mouseenter', () => {
+        this.trackContainerInteraction('hover');
+      });
+    }
+
+    trackContainerInteraction(type) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'error_404_container_interaction', {
+          interaction_type: type,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupPerformanceMonitoring() {
+      window.addEventListener('load', () => {
+        const perfData = window.performance.timing;
+        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'error_404_page_performance', {
+            page_load_time: pageLoadTime,
+            dom_interactive: perfData.domInteractive - perfData.navigationStart,
+            dom_complete: perfData.domComplete - perfData.navigationStart,
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ErrorPageUltraPro();
+    });
+  } else {
+    new ErrorPageUltraPro();
+  }
+</script>
