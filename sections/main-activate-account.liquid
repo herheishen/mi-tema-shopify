@@ -12,16 +12,357 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  /* ========== ULTRA PRO ACTIVATE ACCOUNT PAGE ========== */
+  
+  .customer.activate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    animation: page-fade-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .customer.activate h1 {
+    animation: heading-reveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    letter-spacing: -0.02em;
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .customer.activate > p {
+    animation: text-fade-in 0.7s ease-out 0.2s both;
+    text-align: center;
+    max-width: 500px;
+    opacity: 0.85;
+    margin-bottom: 2rem;
+  }
+
+  @keyframes heading-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes text-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glasmorphism form container */
+  .customer.activate form {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    max-width: 500px;
+    width: 100%;
+    animation: form-slide-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+  }
+
+  @keyframes form-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Form field styling */
+  .customer.activate .field {
+    margin-bottom: 1.5rem;
+    animation: field-fade-in 0.6s ease-out both;
+  }
+
+  .customer.activate .field:nth-child(1) {
+    animation-delay: 0.4s;
+  }
+
+  .customer.activate .field:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+
+  @keyframes field-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .customer.activate input[type="password"] {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(4px);
+    font-size: 1rem;
+  }
+
+  .customer.activate input[type="password"]:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .customer.activate input[type="password"][aria-invalid="true"] {
+    border-color: #e85d75;
+    background: rgba(232, 93, 117, 0.08);
+  }
+
+  .customer.activate input[type="password"][aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px rgba(232, 93, 117, 0.15);
+  }
+
+  .customer.activate label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.3px;
+    opacity: 0.8;
+  }
+
+  /* Error message styling */
+  .customer.activate .form__message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    animation: error-slide-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes error-slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .customer.activate h2.form__message {
+    background: rgba(232, 93, 117, 0.15);
+    border: 1px solid rgba(232, 93, 117, 0.3);
+    color: #e85d75;
+  }
+
+  .customer.activate small.form__message {
+    background: rgba(232, 93, 117, 0.1);
+    border-left: 3px solid #e85d75;
+    color: #e85d75;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .customer.activate ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .customer.activate ul li {
+    padding: 0.5rem 0;
+    animation: list-item-fade 0.5s ease-out both;
+  }
+
+  .customer.activate ul li:nth-child(1) { animation-delay: 0.4s; }
+  .customer.activate ul li:nth-child(2) { animation-delay: 0.45s; }
+  .customer.activate ul li:nth-child(3) { animation-delay: 0.5s; }
+
+  @keyframes list-item-fade {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .customer.activate ul li a {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .customer.activate ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: currentColor;
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .customer.activate ul li a:hover::after {
+    width: 100%;
+  }
+
+  /* Button styling */
+  .customer.activate button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1)) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 0.875rem 1.5rem !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    animation: button-fade-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .customer.activate button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.4s ease;
+    z-index: 0;
+  }
+
+  .customer.activate button:hover::before {
+    left: 100%;
+  }
+
+  .customer.activate button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15)) !important;
+  }
+
+  .customer.activate button:nth-of-type(1) {
+    animation-delay: 0.6s;
+    margin-right: 1rem;
+  }
+
+  .customer.activate button:nth-of-type(2) {
+    animation-delay: 0.7s;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)) !important;
+  }
+
+  .customer.activate button:nth-of-type(2):hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05)) !important;
+  }
+
+  @keyframes button-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Loading state */
+  .customer.activate button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    animation: button-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes button-pulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+    50% { box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15); }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .customer.activate,
+    .customer.activate h1,
+    .customer.activate > p,
+    .customer.activate form,
+    .customer.activate .field,
+    .customer.activate input,
+    .customer.activate button,
+    .customer.activate .form__message {
+      animation: none;
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .customer.activate form {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .customer.activate input[type="password"] {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .customer.activate input[type="password"]:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+    }
+
+    .customer.activate button {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .customer.activate button:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)) !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+  }
 {%- endstyle -%}
 
-<div class="customer activate section-{{ section.id }}-padding">
-  <h1>
+<div class="customer activate section-{{ section.id }}-padding" data-activate-account data-section-id="{{ section.id }}">
+  <h1 data-page-title>
     {{ 'customer.activate_account.title' | t }}
   </h1>
-  <p>
+  <p data-page-subtext>
     {{ 'customer.activate_account.subtext' | t }}
   </p>
-  {%- form 'activate_customer_password' -%}
+  {%- form 'activate_customer_password', data-activation-form: true -%}
     {%- if form.errors -%}
       <h2 class="form__message" tabindex="-1" autofocus>
         <span class="svg-wrapper">
@@ -45,13 +386,14 @@
       </ul>
     {%- endif -%}
 
-    <div class="field">
+    <div class="field" data-field-password>
       <input
         type="password"
         name="customer[password]"
         id="password"
         autocomplete="new-password"
         placeholder="{{ 'customer.activate_account.password' | t }}"
+        data-password-input
         {% if form.errors contains 'password' %}
           aria-invalid="true"
           aria-describedby="password-error"
@@ -71,13 +413,14 @@
       {%- endif -%}
     </div>
 
-    <div class="field">
+    <div class="field" data-field-password-confirm>
       <input
         type="password"
         name="customer[password_confirmation]"
         id="password_confirmation"
         autocomplete="new-password"
         placeholder="{{ 'customer.activate_account.password_confirm' | t }}"
+        data-password-confirm-input
         {% if form.errors contains 'password' %}
           aria-invalid="true"
           aria-describedby="password_confirmation-error"
@@ -97,14 +440,190 @@
       {%- endif -%}
     </div>
 
-    <button>
+    <button data-submit-button aria-label="Activate account">
       {{ 'customer.activate_account.submit' | t }}
     </button>
-    <button name="decline">
+    <button name="decline" data-cancel-button aria-label="Cancel account activation">
       {{ 'customer.activate_account.cancel' | t }}
     </button>
   {%- endform -%}
 </div>
+
+<script>
+  // ========== ULTRA PRO ACTIVATE ACCOUNT PAGE TRACKING ==========
+  class ActivateAccountUltraPro {
+    constructor(sectionId) {
+      this.page = document.querySelector('[data-activate-account]');
+      this.form = document.querySelector('[data-activation-form]');
+      this.submitButton = document.querySelector('[data-submit-button]');
+      this.cancelButton = document.querySelector('[data-cancel-button]');
+      this.passwordInput = document.querySelector('[data-password-input]');
+      this.passwordConfirmInput = document.querySelector('[data-password-confirm-input]');
+      this.sectionId = sectionId;
+      
+      if (!this.page) return;
+
+      this.init();
+    }
+
+    init() {
+      this.trackPageView();
+      this.setupFormTracking();
+      this.setupInputValidation();
+      this.setupButtonTracking();
+    }
+
+    trackPageView() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_page_view', {
+          section_id: this.sectionId,
+          page_type: 'account_activation',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupFormTracking() {
+      if (!this.form) return;
+
+      this.form.addEventListener('submit', (e) => {
+        this.trackFormSubmit();
+      });
+    }
+
+    trackFormSubmit() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_submit', {
+          section_id: this.sectionId,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupInputValidation() {
+      if (this.passwordInput) {
+        this.passwordInput.addEventListener('input', (e) => {
+          this.validatePassword(e.target.value);
+        });
+
+        this.passwordInput.addEventListener('focus', () => {
+          this.trackInputFocus('password');
+        });
+      }
+
+      if (this.passwordConfirmInput) {
+        this.passwordConfirmInput.addEventListener('input', (e) => {
+          this.validatePasswordMatch();
+        });
+
+        this.passwordConfirmInput.addEventListener('focus', () => {
+          this.trackInputFocus('password_confirm');
+        });
+      }
+    }
+
+    validatePassword(value) {
+      const strength = this.calculatePasswordStrength(value);
+      if (strength.score > 0) {
+        this.trackPasswordStrength(strength);
+      }
+    }
+
+    validatePasswordMatch() {
+      if (this.passwordInput && this.passwordConfirmInput) {
+        const match = this.passwordInput.value === this.passwordConfirmInput.value;
+        if (match && this.passwordInput.value.length > 0) {
+          this.trackPasswordMatch(true);
+        }
+      }
+    }
+
+    calculatePasswordStrength(password) {
+      let score = 0;
+      const feedback = [];
+      
+      if (password.length >= 8) score++; else feedback.push('min_length');
+      if (/[a-z]/.test(password)) score++; else feedback.push('lowercase');
+      if (/[A-Z]/.test(password)) score++; else feedback.push('uppercase');
+      if (/[0-9]/.test(password)) score++; else feedback.push('numbers');
+      if (/[^a-zA-Z0-9]/.test(password)) score++; else feedback.push('special_chars');
+
+      return { score, feedback };
+    }
+
+    trackPasswordStrength(strength) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_password_strength', {
+          section_id: this.sectionId,
+          strength_score: strength.score,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    trackPasswordMatch(matched) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_password_match', {
+          section_id: this.sectionId,
+          passwords_match: matched,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    trackInputFocus(fieldName) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_input_focus', {
+          section_id: this.sectionId,
+          field_name: fieldName,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    setupButtonTracking() {
+      if (this.submitButton) {
+        this.submitButton.addEventListener('click', () => {
+          if (!this.submitButton.disabled) {
+            this.trackSubmitClick();
+          }
+        });
+      }
+
+      if (this.cancelButton) {
+        this.cancelButton.addEventListener('click', () => {
+          this.trackCancelClick();
+        });
+      }
+    }
+
+    trackSubmitClick() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_submit_click', {
+          section_id: this.sectionId,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+
+    trackCancelClick() {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'activate_account_cancel_click', {
+          section_id: this.sectionId,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ActivateAccountUltraPro('{{ section.id }}');
+    });
+  } else {
+    new ActivateAccountUltraPro('{{ section.id }}');
+  }
+</script>
 
 {% schema %}
 {
