@@ -1,4 +1,30 @@
+
 {{ 'customer.css' | asset_url | stylesheet_tag }}
+{%- style -%}
+  /* Ultra Pro 2025 Glasmorphism & Animations */
+  .ultra-glass {
+    background: linear-gradient(120deg, rgba(255,255,255,0.65) 60%, rgba(200,220,255,0.25) 100%);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.10);
+    backdrop-filter: blur(12px) saturate(1.2);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .ultra-glass:focus-within, .ultra-glass:hover {
+    box-shadow: 0 8px 40px 0 rgba(80,120,255,0.18);
+  }
+  .ultra-animate-fade {
+    opacity: 0;
+    animation: ultra-fade-in 0.7s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  @keyframes ultra-fade-in {
+    from { opacity: 0; transform: translateY(32px) scale(.98); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ultra-animate-fade { animation: none !important; opacity: 1 !important; }
+  }
+{%- endstyle -%}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -18,18 +44,18 @@
   {%- assign hide_shop_login_button = true -%}
 {%- endif -%}
 
-<div class="customer login section-{{ section.id }}-padding">
-  <h1 id="recover" tabindex="-1">
+<div class="customer login section-{{ section.id }}-padding ultra-glass ultra-animate-fade" data-login-page data-section-id="{{ section.id }}">
+  <h1 id="recover" tabindex="-1" data-login-title>
     {{ 'customer.recover_password.title' | t }}
   </h1>
-  <div>
+  <div class="ultra-glass ultra-animate-fade" data-login-recover-form>
     <p>
       {{ 'customer.recover_password.subtext' | t }}
     </p>
 
     {%- form 'recover_customer_password' -%}
       {% assign recover_success = form.posted_successfully? %}
-      <div class="field">
+      <div class="field ultra-glass ultra-animate-fade" data-login-recover-email>
         <input
           type="email"
           value=""
@@ -58,20 +84,20 @@
         </small>
       {%- endif -%}
 
-      <button>
+      <button data-login-recover-submit>
         {{ 'customer.login_page.submit' | t }}
       </button>
 
-      <a href="#login">
+      <a href="#login" data-login-recover-cancel>
         {{ 'customer.login_page.cancel' | t }}
       </a>
     {%- endform -%}
   </div>
 
-  <h1 id="login" tabindex="-1">
+  <h1 id="login" tabindex="-1" data-login-title>
     {{ 'customer.login_page.title' | t }}
   </h1>
-  <div>
+  <div class="ultra-glass ultra-animate-fade" data-login-main-form>
     {%- if recover_success == true -%}
       <h3 class="form__message" tabindex="-1" autofocus>
         <span class="svg-wrapper">
@@ -104,7 +130,7 @@
         </section>
       {%- endif -%}
 
-      <div class="field">
+      <div class="field ultra-glass ultra-animate-fade" data-login-email>
         <input
           type="email"
           name="customer[email]"
@@ -123,7 +149,7 @@
       </div>
 
       {%- if form.password_needed -%}
-        <div class="field">
+        <div class="field ultra-glass ultra-animate-fade" data-login-password>
           <input
             type="password"
             value=""
@@ -140,28 +166,28 @@
           </label>
         </div>
 
-        <a href="#recover">
+        <a href="#recover" data-login-forgot>
           {{ 'customer.login_page.forgot_password' | t }}
         </a>
       {%- endif -%}
 
-      <button>
+      <button data-login-submit>
         {{ 'customer.login_page.sign_in' | t }}
       </button>
 
-      <a href="{{ routes.account_register_url }}">
+      <a href="{{ routes.account_register_url }}" data-login-create-account>
         {{ 'customer.login_page.create_account' | t }}
       </a>
     {%- endform -%}
   </div>
 
   {%- if shop.checkout.guest_login -%}
-    <div>
+    <div class="ultra-glass ultra-animate-fade" data-login-guest>
       <hr>
       <h2>{{ 'customer.login_page.guest_title' | t }}</h2>
 
       {%- form 'guest_login' -%}
-        <button>
+        <button data-login-guest-submit>
           {{ 'customer.login_page.guest_continue' | t }}
         </button>
       {%- endform -%}
@@ -169,6 +195,117 @@
   {%- endif -%}
 </div>
 
+<script>
+class LoginPageUltraPro {
+  constructor(sectionId) {
+    this.sectionId = sectionId;
+    this.init();
+  }
+  init() {
+    this.trackView();
+    this.setupFormTracking();
+    this.setupButtonTracking();
+    this.setupIntersectionObserver();
+  }
+  trackView() {
+    if (window.gtag) {
+      window.gtag('event', 'login_page_view', {
+        section_id: this.sectionId,
+        event_category: 'Login',
+        event_label: 'Login Page View',
+      });
+    }
+  }
+  setupFormTracking() {
+    const loginForm = document.querySelector('[data-login-main-form] form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', () => {
+        if (window.gtag) {
+          window.gtag('event', 'login_submit', {
+            section_id: this.sectionId,
+            event_category: 'Login',
+            event_label: 'Login Submit',
+          });
+        }
+      });
+    }
+    const recoverForm = document.querySelector('[data-login-recover-form] form');
+    if (recoverForm) {
+      recoverForm.addEventListener('submit', () => {
+        if (window.gtag) {
+          window.gtag('event', 'recover_submit', {
+            section_id: this.sectionId,
+            event_category: 'Login',
+            event_label: 'Recover Submit',
+          });
+        }
+      });
+    }
+    const guestForm = document.querySelector('[data-login-guest] form');
+    if (guestForm) {
+      guestForm.addEventListener('submit', () => {
+        if (window.gtag) {
+          window.gtag('event', 'guest_login', {
+            section_id: this.sectionId,
+            event_category: 'Login',
+            event_label: 'Guest Login',
+          });
+        }
+      });
+    }
+  }
+  setupButtonTracking() {
+    const createAccount = document.querySelector('[data-login-create-account]');
+    if (createAccount) {
+      createAccount.addEventListener('click', () => {
+        if (window.gtag) {
+          window.gtag('event', 'create_account_click', {
+            section_id: this.sectionId,
+            event_category: 'Login',
+            event_label: 'Create Account',
+          });
+        }
+      });
+    }
+    const forgot = document.querySelector('[data-login-forgot]');
+    if (forgot) {
+      forgot.addEventListener('click', () => {
+        if (window.gtag) {
+          window.gtag('event', 'forgot_password_click', {
+            section_id: this.sectionId,
+            event_category: 'Login',
+            event_label: 'Forgot Password',
+          });
+        }
+      });
+    }
+  }
+  setupIntersectionObserver() {
+    const fadeEls = document.querySelectorAll('.ultra-animate-fade');
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.animationDelay = (entry.target.dataset.index || 0) * 0.08 + 's';
+            entry.target.classList.add('ultra-animate-fade--visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      fadeEls.forEach((el, idx) => {
+        el.dataset.index = idx;
+        observer.observe(el);
+      });
+    } else {
+      fadeEls.forEach(el => el.classList.add('ultra-animate-fade--visible'));
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const el = document.querySelector('[data-login-page]');
+  if (el) new LoginPageUltraPro(el.dataset.sectionId);
+});
+</script>
 {% schema %}
 {
   "name": "t:sections.main-login.name",
